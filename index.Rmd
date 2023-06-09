@@ -3,3 +3,48 @@ output: md_document
 author: "Breanna Richards"
 always_allow_html: yes
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(readr)
+library(kableExtra)
+library(janitor)
+library(reshape2)
+library(data.table)
+library(ggplot2)
+library(ggthemes)
+library(gganimate)
+
+```
+
+"*Anime is an important part of our culture!*" \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School
+
+![](./img/spy-family.gif)
+
+Indeed it is, Ryota. Indeed it is.
+
+Anime, a term derived from the Japanese abbreviation of "animation," has become a significant part of global popular culture in recent decades. Its relevance in today's culture can be attributed to several factors, including its unique art style, diverse storytelling techniques, and the ability to explore complex themes.
+
+Anime's storytelling techniques are diverse and encompass a wide range of genres and themes. Perhaps you've even heard of a few! From action-packed shonen series like "Dragon Ball" and "Naruto" to emotional dramas like "Your Lie in April" and "Clannad," there is an anime for **everyone** out there! Anime also explores genres beyond traditional boundaries, such as psychological thrillers ("Death Note"), science fiction ("Ghost in the Shell"), and fantasy ("Attack on Titan").
+
+In recent years, the popularity of anime has skyrocketed, thanks to digital platforms and streaming services making it easily accessible to a global audience. Anime conventions and events draw massive crowds, showcasing the passion and enthusiasm of fans. The influence of anime has permeated various aspects of popular culture, including fashion, music, video games, and even Hollywood adaptations.
+
+With dozens of new series being released each season, it's no surprised that fans and providers alike often wonder the age-old question: What makes an anime stick? What makes an anime go down in history like absolute titans (no pun intended) like Attack on Titan, Naruto, Bleach, Dragon Ball Z, and more?! And how do we know and keep track of how audiences are receiving this media?
+
+Well, look no further! In comes [MyAnimeList.net](https://myanimelist.net/).
+
+MyAnimeList.net is an online platform dedicated to providing a comprehensive database and community-driven hub for anime and manga enthusiasts. Serving as a centralized resource, the website allows users to create personal profiles and maintain detailed lists of anime series, films, and manga they have consumed.
+
+At its core, MyAnimeList.net offers a vast catalog of titles, encompassing a wide range of genres and themes. Users can search and explore the database to discover new anime and manga, while accessing essential information such as synopses, release dates, and production details.
+
+The website also facilitates user engagement through its rating and review system, enabling community members to express their opinions on individual titles. This user-generated content fosters a vibrant environment for critical discourse, as well as the exchange of recommendations and insights.
+
+We downloaded a dataset from Kaggle containing information about 17.562 anime and the preference from 325.772 different users.
+
+```{r}
+
+anime_full_df <- read_csv("data/anime_df_full.csv")
+
+
+```
