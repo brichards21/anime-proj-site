@@ -1,5 +1,5 @@
-“*Anime is an important part of our culture!*” ~ Ryota Mitarai from
-Danganronpa 3: The End of Hope’s Peak High School
+{“*Anime is an important part of our culture!*” ~ Ryota Mitarai from
+Danganronpa 3: The End of Hope’s Peak High School}
 
 ![](./img/spy-family.gif)
 
