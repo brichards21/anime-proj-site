@@ -3,8 +3,9 @@ output: md_document
 author: "Breanna Richards"
 always_allow_html: yes
 ---
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(lubridate)
 library(readr)
@@ -40,12 +41,79 @@ At its core, MyAnimeList.net offers a vast catalog of titles, encompassing a wid
 
 The website also facilitates user engagement through its rating and review system, enabling community members to express their opinions on individual titles. This user-generated content fosters a vibrant environment for critical discourse, as well as the exchange of recommendations and insights.
 
-We downloaded a dataset from Kaggle containing information about 17.562 anime and the preference from 325.772 different users.
+## Data and Data Cleaning
+
+We downloaded three [dataset housed on Kaggle](https://www.kaggle.com/datasets/hernan4444/anime-recommendation-database-2020?select=anime.csv) scraped between February 26th and March 20th containing information about 17,562 anime and the preference from 325,772 different users.
+
+The `anime` dataset, which is the main dataset of interest detailed the core information of each anime listed.
+
+We retained the following information from the `anime` dataset:
+
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Column                            | Description                                                                                   |
++===================================+===============================================================================================+
+| MAL_ID                            | MyAnimelist ID of the anime. Unique for each anime.                                           |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Name                              | full name of the anime                                                                        |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Score                             | average score of the anime given from all users in MyAnimelist database. Score out of 10 pts. |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Genres                            | comma separated list of genres for this anime. (e.g. Action, Adventure, Comedy, Drama, etc.)  |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Type                              | TV, movie, OVA, etc                                                                           |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Episodes                          | number of episodes                                                                            |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Aired                             | broadcast date (e.g. Apr 3, 1998 to Apr 24, 1999)                                             |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Studios                           | comma separated list of studios                                                               |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Source                            | Manga, Light novel, Book, etc.                                                                |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Duration                          | duration of the anime per episode (e.g. 24 min. per ep.)                                      |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Rating                            | age rate (e.g. R - 17+ (violence & profanity))                                                |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Ranked                            | ranking position based on the score (e.g 28))                                                 |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Popularity                        | position based on the number of users who have added the anime to their list                  |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Members                           | number of community members that are in this anime's "group"                                  |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Favorites                         | number of users who have the anime in their "favorites" list                                  |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Watching                          | number of users who have marked the anime as 'watching'                                       |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Completed                         | number of users who have marked the anime as 'completed'                                      |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| On-Hold                           | number of users who have marked the anime as 'on-hold'                                        |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Dropped                           | number of users who have marked the anime as 'dropped'                                        |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+| Plan to Watch                     | number of users who have marked the anime as 'plan to watch'                                  |
++-----------------------------------+-----------------------------------------------------------------------------------------------+
+
+Additionally, we downloaded the `anime_with_synopsis` and the `rating_complete` data
 
 ```{r, include=FALSE}
 
 anime_full_df <- read_csv("data/anime_df_full.csv") %>%
-  select(-total_mins)
-
-head(anime_full_df)
+  select(-c(total_mins, ...1)) 
+anime_full_df$...1
 ```
+
+In particular, this raw dataset contains the following information:
+
+I first chose to reduce our analysis to only include anime with more than one episodes, so now one-shots or distinctive OVAs. We wanted to get information about proper anime series.
+
+```{r}
+# count unique anime
+length(unique(anime_full_df$mal_id))
+
+```
+
+## Research Questions
+
+1) Do the scores of these anime differ based on all users vs. users that have that anime marked as completed?
+
+2) Can the synopsis of an anime be a good indicator of anime ranking?
