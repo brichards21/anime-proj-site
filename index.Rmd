@@ -19,7 +19,7 @@ library(gganimate)
 
 ```
 
-{\huge "*Anime is an important part of our culture!*" \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School}
+"*Anime is an important part of our culture!*" \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School
 
 ![](./img/spy-family.gif)
 
@@ -41,8 +41,6 @@ At its core, MyAnimeList.net offers a vast catalog of titles, encompassing a wid
 
 The website also facilitates user engagement through its rating and review system, enabling community members to express their opinions on individual titles. This user-generated content fosters a vibrant environment for critical discourse, as well as the exchange of recommendations and insights.
 
-
-
 ## Data and Data Cleaning
 
 We downloaded three [dataset housed on Kaggle](https://www.kaggle.com/datasets/hernan4444/anime-recommendation-database-2020?select=anime.csv) scraped between February 26th and March 20th containing information about 17,562 anime and the preference from 325,772 different users.
@@ -51,49 +49,28 @@ The `anime` dataset, which is the main dataset of interest detailed the core inf
 
 We retained the following information from the `anime` dataset:
 
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Column                            | Description                                                                                       |
-+===================================+===================================================================================================+
-| MAL_ID                            | MyAnimelist ID of the anime. Unique for each anime.                                               |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Name                              | full name of the anime                                                                            |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Score                             | average score of the anime given from all users in the MyAnimelist database. Score out of 10 pts. |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Genres                            | comma separated list of genres for this anime. (e.g. Action, Adventure, Comedy, Drama, etc.)      |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Type                              | TV, movie, OVA, etc                                                                               |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Episodes                          | number of episodes                                                                                |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Aired                             | broadcast date (e.g. Apr 3, 1998 to Apr 24, 1999)                                                 |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Studios                           | comma separated list of studios                                                                   |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Source                            | Manga, Light novel, Book, etc.                                                                    |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Duration                          | duration of the anime per episode (e.g. 24 min. per ep.)                                          |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Rating                            | age rate (e.g. R - 17+ (violence & profanity))                                                    |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Ranked                            | ranking position based on the score (e.g 28))                                                     |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Popularity                        | position based on the number of users who have added the anime to their list                      |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Members                           | number of community members that are in this anime's "group"                                      |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Favorites                         | number of users who have the anime in their "favorites" list                                      |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Watching                          | number of users who have marked the anime as 'watching'                                           |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Completed                         | number of users who have marked the anime as 'completed'                                          |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| On-Hold                           | number of users who have marked the anime as 'on-hold'                                            |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Dropped                           | number of users who have marked the anime as 'dropped'                                            |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
-| Plan to Watch                     | number of users who have marked the anime as 'plan to watch'                                      |
-+-----------------------------------+---------------------------------------------------------------------------------------------------+
+| Column        | Description                                                                                       |
+|--------------------|----------------------------------------------------|
+| MAL_ID        | MyAnimelist ID of the anime. Unique for each anime.                                               |
+| Name          | full name of the anime                                                                            |
+| Score         | average score of the anime given from all users in the MyAnimelist database. Score out of 10 pts. |
+| Genres        | comma separated list of genres for this anime. (e.g. Action, Adventure, Comedy, Drama, etc.)      |
+| Type          | TV, movie, OVA, etc                                                                               |
+| Episodes      | number of episodes                                                                                |
+| Aired         | broadcast date (e.g. Apr 3, 1998 to Apr 24, 1999)                                                 |
+| Studios       | comma separated list of studios                                                                   |
+| Source        | Manga, Light novel, Book, etc.                                                                    |
+| Duration      | duration of the anime per episode (e.g. 24 min. per ep.)                                          |
+| Rating        | age rate (e.g. R - 17+ (violence & profanity))                                                    |
+| Ranked        | ranking position based on the score (e.g 28))                                                     |
+| Popularity    | position based on the number of users who have added the anime to their list                      |
+| Members       | number of community members that are in this anime's "group"                                      |
+| Favorites     | number of users who have the anime in their "favorites" list                                      |
+| Watching      | number of users who have marked the anime as 'watching'                                           |
+| Completed     | number of users who have marked the anime as 'completed'                                          |
+| On-Hold       | number of users who have marked the anime as 'on-hold'                                            |
+| Dropped       | number of users who have marked the anime as 'dropped'                                            |
+| Plan to Watch | number of users who have marked the anime as 'plan to watch'                                      |
 
 Additionally, we downloaded the `anime_with_synopsis` and the `rating_complete` data. The key information retained in the `anime_with_synopsis` data is the synopsis of each anime as recorded on the MyAnimeList.net site.
 
@@ -104,7 +81,7 @@ The `rating_complete` data only considers anime that users have marked as 'compl
 Thus, we have two more columns of interest in our dataset.
 
 | Column          | Description                                                                                                                             |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------|
+|--------------|----------------------------------------------------------|
 | Synopsis        | string with the synopsis of the anime                                                                                                   |
 | Score_completed | average score of the anime given from users that have marked the anime as 'completed' in the MyAnimelist database. Score out of 10 pts. |
 
@@ -112,34 +89,141 @@ Thus, we have two more columns of interest in our dataset.
 
 anime_full_df <- read_csv("data/anime_df_full.csv") %>%
   select(-c(...1)) 
+```
+
+
+
+```{r}
+
+# genres
+
+genre_vec <- unlist(strsplit(anime_full_df$genres, ", "))
+
+genre_df <- as.data.frame(prop.table(table(genre_vec))) %>%
+  filter(Freq >= 0.02)
+
+keep_genres <- as.character(genre_df$genre_vec)
+
+genres <- cbind(anime_full_df$mal_id, anime_full_df$genres, 
+                as.data.frame(matrix(ncol = length(keep_genres), 
+                     nrow = nrow(anime_full_df))))
+
+colnames(genres) <- c("mal_id", "genres", keep_genres)
+
+for (i in 1:length(keep_genres)){
+  for (j in 1:nrow(genres)) {
+  
+  if (str_detect(genres[j, "genres"], keep_genres[i]) & !is.na(genres[j, "genres"])){
+    genres[j, keep_genres[i]] <- 1
+  }
+    else{
+      genres[j, keep_genres[i]] <- 0
+    }
+  }
+}
 
 ```
 
-I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. 
+
+````{r}
+
+genres_use <- genres %>%
+  select(-genres)
+
+```
+
+```{r}
+
+anime_full_df <- left_join(anime_full_df, genres_use)
+
+```
+
+
+```{r}
+
+# aired
+
+anime_full_df <- anime_full_df %>%
+  tidyr::separate(aired, c("start_date", "end_date"), " to ")
+
+
+anime_full_df$start_year <- str_sub(anime_full_df$start_date, -4, -1)
+anime_full_df$end_year <- str_sub(anime_full_df$end_date, -4, -1)
+
+```
+
+
+
+```{r}
+# studios
+
+studio_vec <- unlist(strsplit(anime_full_df$studios, ", "))
+
+length(unique(studio_vec)) # 601 studios
+
+studio_df <- as.data.frame(sort(table(studio_vec)), decreasing = T) %>%
+  filter(Freq >= 40)
+# retain studios with at least 40 anime
+
+keep_studios <- as.character(studio_df$studio_vec)
+
+studios <- cbind(anime_full_df$mal_id, anime_full_df$studios, 
+                as.data.frame(matrix(ncol = length(keep_studios), 
+                     nrow = nrow(anime_full_df))))
+
+colnames(studios) <- c("mal_id", "studios", keep_studios)
+
+for (i in 1:length(keep_studios)){
+  for (j in 1:nrow(studios)) {
+  
+  if (str_detect(studios[j, "studios"], keep_studios[i]) & 
+      !is.na(studios[j, "studios"])){
+    studios[j, keep_studios[i]] <- 1
+  }
+    else{
+      studios[j, keep_studios[i]] <- 0
+    }
+  }
+}
+
+
+```
+
+
+```{r}
+
+tst <- anime_full_df %>%
+  separate(studios, c("studio1", "studio2", "studio3", "studio4"), ", ")
+
+tst$num_studios <- rowSums(!is.na(tst[, c("studio1", "studio2", "studio3",
+                                   "studio4")]), na.rm = T)
+
+```
+
+I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. Additionally, the `genres`,  `aired`, and `studios` variables were reformatted for the purpose of analysis. *Note: For genre, we retained information about genres that had a frequency of at least 2% of all the genres listed in the dataset.
+
+All data cleaning was conducted using NumPy and Pandas in Python. The code for data cleaning can be found here. 
 
 ```{r, include=FALSE}
 # count unique anime
 length(unique(anime_full_df$mal_id))
 
+
+
 ```
 
 ## Research Questions
 
-There are a few questions that we hope to answer using this dataset. 
+There are a few questions that we hope to answer using this dataset.
 
-1) What features are most important to predicting the score of an anime?
+1)  What features are most important to predicting the score of an anime?
 
-2) Do the scores of these anime differ based on all users vs. users that have that anime marked as completed?
+2)  Do the scores of these anime differ based on all users vs. users that have that anime marked as completed?
 
-3) Is there an optimal number of episodes an anime should have to be scored well on MyAnimeList?
+3)  Is there an optimal number of episodes an anime should have to be scored well on MyAnimeList?
 
-4) Can the synopsis of an anime be a good indicator of anime ranking?
+4)  Can the synopsis of an anime be a good indicator of anime ranking?
 
-
-
-### The Pinnacle of Anime: What are the most important contributors? 
-
-
-
+### The Pinnacle of Anime: What are the most important contributors?
 
 ### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as 'completed'?
