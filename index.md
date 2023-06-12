@@ -1,5 +1,5 @@
-{“*Anime is an important part of our culture!*” ~ Ryota Mitarai from
-Danganronpa 3: The End of Hope’s Peak High School}
+“*Anime is an important part of our culture!*” ~ Ryota Mitarai from
+Danganronpa 3: The End of Hope’s Peak High School
 
 ![](./img/spy-family.gif)
 
@@ -68,8 +68,8 @@ We retained the following information from the `anime` dataset:
 
 <table>
 <colgroup>
-<col style="width: 26%" />
-<col style="width: 73%" />
+<col style="width: 27%" />
+<col style="width: 72%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -189,8 +189,8 @@ Thus, we have two more columns of interest in our dataset.
 
 <table>
 <colgroup>
-<col style="width: 11%" />
-<col style="width: 88%" />
+<col style="width: 19%" />
+<col style="width: 80%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -212,11 +212,19 @@ pts.</td>
 </tbody>
 </table>
 
+    ## [1] 601
+
 I first chose to reduce our analysis to only include anime with more
 than one episodes, so no movies, one-shots, or distinctive OVAs. We
 wanted to get information about anime series with continuous behavior,
 even if it was just a two-episode stint. This reduced our pool to 9,181
-anime.
+anime. Additionally, the `genres`, `aired`, and `studios` variables were
+reformatted for the purpose of analysis. \*Note: For genre, we retained
+information about genres that had a frequency of at least 2% of all the
+genres listed in the dataset.
+
+All data cleaning was conducted using NumPy and Pandas in Python. The
+code for data cleaning can be found here.
 
 ## Research Questions
 
@@ -233,6 +241,124 @@ There are a few questions that we hope to answer using this dataset.
 
 4.  Can the synopsis of an anime be a good indicator of anime ranking?
 
-### The Pinnacle of Anime: What are the most important contributors?
+### The Pinnacle of Anime: What are the most important contributors to predicting the popularity (score) of an anime?
+
+We start by checking for multicollinearity between our predictors of
+interest in order to reduce dimensionality and stabilize the variance of
+our estimated coefficients. Because of their direct relationship with
+the dependent variable of interest (score), we omit `ranked`,
+`popularity`, and `score_completed`
+
+![](index_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+
+Notably, number of members, favorites, watching, completed, on-hold,
+dropped, and plan to watch are moderately to highly correlated. In order
+to correct for this, we will retain number of community members in each
+anime’s group as the representation of membership to the anime’s fanbase
+in our dataset. Additionally, start year is highly correlated with end
+year so we’ll just retain information on start year and instead create a
+variable representing number of years running.
+
+![](index_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+
+After removing the variables strongly correlated with number of
+variables, we have a better distribution of variables without unexpected
+multicollinearity. We move on to stepwise selection with these
+predictors as well as our non-numeric predictors to choose the best
+variables to model MyAnimeList score.
+
+To recall, we retain the following variables as the subset of predictors
+to choose from: type, number of episodes, primary studio, secondary
+studio, source, rating, number of members in that anime’s community,
+duration in minutes per episode, airing start year, number of animation
+studios working on the anime, and binary/indication variables for the
+following variables: Action, Adventure, Comedy, Drama, Fantasy,
+Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice
+of Life, and Supernatural.
+
+In order to validate the generalizability, we will perform stepwise
+selection on 80% of our dataset, which we’ll call the training data. The
+remaining 20% will be saved to test the accuracy of our model on.
+
+After going through stepwise selection, we yield the following model:
+
+*E*\[*S**c**o**r**e*\]  − 14.4 + 0.0004*E**p**i**s**o**d**e**s* + 0.16*R**a**t**i**n**g*<sub>*P**G* − 13</sub> + 0.05*R**a**t**i**n**g*<sub>*P**G*</sub> + 0.22*R**a**t**i**n**g*<sub>*R*</sub> − 0.16*R**a**t**i**n**g*<sub>*R*+</sub> − 0.21*R**a**t**i**n**g*<sub>*R**x*</sub> + 0.000001*M**e**m**b**e**r**s* + 0.02*D**u**r**a**t**i**o**n* + 0.02*A**c**t**i**o**n* + 0.15*C**o**m**e**d**y* + 0.31*D**r**a**m**a* + 0.26*H**i**s**t**o**r**i**c**a**l*+
+
+0.06*M**a**g**i**c* + 0.04*S**c**h**o**o**l* + 0.28*S**h**o**u**n**e**n* + 0.23*S**l**i**c**e* *o**f* *L**i**f**e* + 0.01*S**t**a**r**t**Y**e**a**r* + 0.03*N**u**m*. *Y**e**a**r**s* *R**u**n**n**i**n**g*
+
+where *E*\[*S**c**o**r**e*\] is the expected value of the score of each
+anime.
+
+    ## 
+    ## Call:
+    ## lm(formula = score ~ episodes + rating + members + duration_mins + 
+    ##     action + comedy + drama + historical + magic + school + shounen + 
+    ##     slice_of_life + start_year + num_years_running, data = train)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.5290 -0.3887  0.0254  0.4292  1.8228 
+    ## 
+    ## Coefficients:
+    ##                                        Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                          -1.435e+01  1.973e+00  -7.271 4.10e-13 ***
+    ## episodes                              3.973e-04  1.832e-04   2.169 0.030137 *  
+    ## ratingPG-13 - Teens 13 or older       1.581e-01  3.079e-02   5.134 2.95e-07 ***
+    ## ratingPG - Children                   5.012e-02  4.447e-02   1.127 0.259768    
+    ## ratingR - 17+ (violence & profanity)  2.186e-01  4.212e-02   5.190 2.19e-07 ***
+    ## ratingR+ - Mild Nudity               -1.615e-01  4.207e-02  -3.838 0.000126 ***
+    ## ratingRx - Hentai                    -2.056e-01  4.048e-02  -5.078 3.95e-07 ***
+    ## members                               1.348e-06  5.028e-08  26.804  < 2e-16 ***
+    ## duration_mins                         1.640e-02  1.064e-03  15.421  < 2e-16 ***
+    ## action1                               1.615e-02  2.269e-02   0.712 0.476548    
+    ## comedy1                               1.481e-01  2.062e-02   7.184 7.77e-13 ***
+    ## drama1                                3.114e-01  2.488e-02  12.514  < 2e-16 ***
+    ## historical1                           2.626e-01  3.652e-02   7.190 7.43e-13 ***
+    ## magic1                                6.428e-02  3.200e-02   2.009 0.044598 *  
+    ## school1                               3.519e-02  2.608e-02   1.349 0.177276    
+    ## shounen1                              2.779e-01  2.476e-02  11.224  < 2e-16 ***
+    ## slice_of_life1                        2.273e-01  2.836e-02   8.015 1.36e-15 ***
+    ## start_year                            1.011e-02  9.820e-04  10.298  < 2e-16 ***
+    ## num_years_running                     3.291e-02  9.432e-03   3.489 0.000489 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 0.6343 on 5078 degrees of freedom
+    ##   (2247 observations deleted due to missingness)
+    ## Multiple R-squared:  0.3634, Adjusted R-squared:  0.3612 
+    ## F-statistic: 161.1 on 18 and 5078 DF,  p-value: < 2.2e-16
+
+These are the genres that are more likely to have a high score on
+MyAnimeList.net in order:
+
+1.  Drama
+
+2.  Historical
+
+3.  Shounen
+
+4.  Slice of Life
+
+5.  Comedy
+
+6.  Magic
+
+7.  School
+
+8.  Action
+
+Now, you may be wondering for example, I mean, from absolute modern day
+anime titans like My Hero Academia and Jujutsu Kaisen, it’s no doubt
+that action anime encompass a huge portion of the hits right now.
+However… action is also the most frequently reported genre in 2020. So
+while it’s a standout among the hits, in the grand scheme of things,
+while there are amazing action anime that are being ranked and perceived
+well, there are also action anime out there that are performing less
+favorably among crowds. In fact, it seems that the action genre may even
+be oversaturated with the good, the bad, and the ugly. In other words,
+purely slapping the genre of action on your anime doesn’t make it an
+automatic hit. Yes, it’s true. Audiences won’t just froth at the mouth
+at characters going toe-to-toe in combat without it having that special
+‘umph’ to it that really makes it a generational favorite.
 
 ### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as ‘completed’?

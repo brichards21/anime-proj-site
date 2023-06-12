@@ -24,6 +24,7 @@ library(MASS)
 library(car)
 library(corpcor)
 library(corrplot)
+library(GGally)
 
 ```
 
@@ -93,10 +94,12 @@ Thus, we have two more columns of interest in our dataset.
 | Synopsis        | string with the synopsis of the anime                                                                                                   |
 | Score_completed | average score of the anime given from users that have marked the anime as 'completed' in the MyAnimelist database. Score out of 10 pts. |
 
-```{r, include=FALSE}
+
+```{r}
 
 anime_full_df <- read_csv("data/anime_df_full.csv") %>%
-  select(-c(...1)) 
+  dplyr::select(-c(...1)) 
+
 ```
 
 
@@ -133,10 +136,10 @@ for (i in 1:length(keep_genres)){
 ```
 
 
-````{r}
+```{r}
 
 genres_use <- genres %>%
-  select(-genres)
+  dplyr::select(-genres)
 
 ```
 
@@ -197,7 +200,7 @@ keep_studios <- as.character(studio_df$studio_vec)
 
 ```
 
-````{r}
+```{r}
 
 # studios_use <- studios %>%
 #   select(-studios)
@@ -215,12 +218,12 @@ keep_studios <- as.character(studio_df$studio_vec)
 anime_full_df <- anime_full_df %>%
   separate(studios, c("studio1", "studio2", "studio3", "studio4"), ", ")
 
-anime_full_df$num_studios <- rowSums(!is.na(tst[, c("studio1", "studio2", "studio3",
+anime_full_df$num_studios <- rowSums(!is.na(anime_full_df[, c("studio1", "studio2", "studio3",
                                    "studio4")]), na.rm = T)
 
 
 anime_full_df <- anime_full_df %>%
-  select(-c(studio3, studio4)) %>%
+  dplyr::select(-c(studio3, studio4)) %>%
   mutate(studio1 = ifelse(studio1 %in% keep_studios, studio1,
                           ifelse(is.na(studio1), NA, "Other")),
          studio2 = ifelse(studio2 %in% keep_studios, studio2,
@@ -237,7 +240,7 @@ All data cleaning was conducted using NumPy and Pandas in Python. The code for d
 ```{r, include=FALSE}
 
 anime_full_df <- anime_full_df %>%
-  select(-c(genres, start_date, end_date, duration)) 
+  dplyr::select(-c(genres, start_date, end_date, duration)) 
 
 anime_full_df <- anime_full_df %>%
   clean_names() %>%
@@ -319,23 +322,38 @@ anime_full_mod_df_use <- anime_full_mod_df %>%
 
 corrplot(cor(select_if(na.omit(anime_full_mod_df_use), is.numeric)))
 
+
 ```
 
 After removing the variables strongly correlated with number of variables, we have a better distribution of variables without unexpected multicollinearity. We move on to stepwise selection with these predictors as well as our non-numeric predictors to choose the best variables to model MyAnimeList score. 
 
 To recall, we retain the following variables as the subset of predictors to choose from: type, number of episodes, primary studio, secondary studio, source, rating, number of members in that anime's community, duration in minutes per episode, airing start year, number of animation studios working on the anime, and binary/indication variables for the following variables: Action, Adventure, Comedy, Drama, Fantasy, Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice of Life, and Supernatural.
 
+In order to validate the generalizability, we will perform stepwise selection on 80% of our dataset, which we'll call the training data. The remaining 20% will be saved to test the accuracy of our model on. 
+
 After going through stepwise selection, we yield the following model: 
 
-$$Score ~ Episodes + Rating + Members + Duration + Action + Comedy + Drama + Historical +$$
+$$E[Score] ~ -14.4 + 0.0004Episodes + 0.16Rating_{PG-13} + 0.05Rating_{PG} + 0.22Rating_{R} - 0.16Rating_{R+} - 0.21Rating_{Rx} + 0.000001Members + 0.02Duration + 0.02Action + 0.15Comedy + 0.31Drama + 0.26Historical +$$
 
-$$Magic + School + Shounen + Slice\: of\: Life + Start Year + Num. \:Years\: Running$$
+$$0.06Magic + 0.04School + 0.28Shounen + 0.23Slice\: of\: Life + 0.01Start Year + 0.03Num. \:Years\: Running$$
 
+where $E[Score]$ is the expected value of the score of each anime.
+
+```{r}
+
+set.seed(1)
+row.number <- sample(1:nrow(anime_full_mod_df_use), 
+                     0.8*nrow(anime_full_mod_df_use))
+train = anime_full_mod_df_use[row.number,]
+test = anime_full_mod_df_use[-row.number,]
+
+
+```
 
 ```{r}
 
 # Fit the full model 
-full.model <- lm(score ~., data = na.omit(anime_full_mod_df_use))
+full.model <- lm(score ~., data = na.omit(train))
 # backwards regression model
 step.model <- stepAIC(full.model, direction = "both", 
                       trace = FALSE)
@@ -344,7 +362,7 @@ step.model <- stepAIC(full.model, direction = "both",
 
 fin_mod <- lm(formula = score ~ episodes + rating + members + duration_mins + 
     action + comedy + drama + historical + magic + school + shounen + 
-    slice_of_life + start_year + num_years_running, data = anime_full_mod_df_use)
+    slice_of_life + start_year + num_years_running, data = train)
 
 summary(fin_mod)
 
@@ -371,26 +389,22 @@ These are the genres that are more likely to have a high score on MyAnimeList.ne
 
 Now, you may be wondering for example, \textit{how come action isn't ranked higher on this list?!} I mean, from absolute modern day anime titans like My Hero Academia and Jujutsu Kaisen, it's no doubt that action anime encompass a huge portion of the hits right now. However... action is also the most frequently reported genre in 2020. So while it's a standout among the hits, in the grand scheme of things, while there are amazing action anime that are being ranked and perceived well, there are also action anime out there that are performing less favorably among crowds. In fact, it seems that the action genre may even be oversaturated with the good, the bad, and the ugly.   In other words, purely slapping the genre of action on your anime doesn't make it an automatic hit. Yes, it's true. Audiences won't just froth at the mouth at characters going toe-to-toe in combat without it having that special 'umph' to it that really makes it a generational favorite. 
 
-```{r}
 
-
-
-```
 
 ```{r}
 #train random forest model and calculate feature importance
-rf = randomForest(x= anime_full_df[, c(4:18, 20:40)],
-                  y= anime_full_df[, "score"])
-var_imp <- varImp(rf, scale = FALSE)
+# rf = randomForest(x= anime_full_df[, c(4:18, 20:40)],
+#                   y= anime_full_df[, "score"])
+# var_imp <- varImp(rf, scale = FALSE)
 
 
 
 ```
 
 ```{r}
-var_imp_df <- data.frame(cbind(variable = rownames(var_imp), score = var_imp[,1]))
-var_imp_df$score <- as.double(var_imp_df$score)
-var_imp_df[order(var_imp_df$score,decreasing = TRUE),]
+# var_imp_df <- data.frame(cbind(variable = rownames(var_imp), score = var_imp[,1]))
+# var_imp_df$score <- as.double(var_imp_df$score)
+# var_imp_df[order(var_imp_df$score,decreasing = TRUE),]
 
 ```
 
