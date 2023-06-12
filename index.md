@@ -212,8 +212,6 @@ pts.</td>
 </tbody>
 </table>
 
-    ## [1] 601
-
 I first chose to reduce our analysis to only include anime with more
 than one episodes, so no movies, one-shots, or distinctive OVAs. We
 wanted to get information about anime series with continuous behavior,
@@ -282,9 +280,7 @@ remaining 20% will be saved to test the accuracy of our model on.
 
 After going through stepwise selection, we yield the following model:
 
-*E*\[*S**c**o**r**e*\]  − 14.4 + 0.0004*E**p**i**s**o**d**e**s* + 0.16*R**a**t**i**n**g*<sub>*P**G* − 13</sub> + 0.05*R**a**t**i**n**g*<sub>*P**G*</sub> + 0.22*R**a**t**i**n**g*<sub>*R*</sub> − 0.16*R**a**t**i**n**g*<sub>*R*+</sub> − 0.21*R**a**t**i**n**g*<sub>*R**x*</sub> + 0.000001*M**e**m**b**e**r**s* + 0.02*D**u**r**a**t**i**o**n* + 0.02*A**c**t**i**o**n* + 0.15*C**o**m**e**d**y* + 0.31*D**r**a**m**a* + 0.26*H**i**s**t**o**r**i**c**a**l*+
-
-0.06*M**a**g**i**c* + 0.04*S**c**h**o**o**l* + 0.28*S**h**o**u**n**e**n* + 0.23*S**l**i**c**e* *o**f* *L**i**f**e* + 0.01*S**t**a**r**t**Y**e**a**r* + 0.03*N**u**m*. *Y**e**a**r**s* *R**u**n**n**i**n**g*
+*E*\[*S**c**o**r**e*\] =  − 14.4 + 0.0004*E**p**i**s**o**d**e**s* + 0.16*R**a**t**i**n**g*<sub>*P**G* − 13</sub> + 0.05*R**a**t**i**n**g*<sub>*P**G*</sub> + 0.22*R**a**t**i**n**g*<sub>*R*</sub> − 0.16*R**a**t**i**n**g*<sub>*R*+</sub> − 0.21*R**a**t**i**n**g*<sub>*R**x*</sub> + 0.000001*M**e**m**b**e**r**s* + 0.02*D**u**r**a**t**i**o**n* + 0.02*A**c**t**i**o**n* + 0.15*C**o**m**e**d**y* + 0.31*D**r**a**m**a* + 0.26*H**i**s**t**o**r**i**c**a**l* + 0.06*M**a**g**i**c* + 0.04*S**c**h**o**o**l* + 0.28*S**h**o**u**n**e**n* + 0.23*S**l**i**c**e* *o**f* *L**i**f**e* + 0.01*S**t**a**r**t**Y**e**a**r* + 0.03*N**u**m*. *Y**e**a**r**s* *R**u**n**n**i**n**g*
 
 where *E*\[*S**c**o**r**e*\] is the expected value of the score of each
 anime.
