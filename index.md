@@ -280,7 +280,12 @@ remaining 20% will be saved to test the accuracy of our model on.
 
 After going through stepwise selection, we yield the following model:
 
-*E*\[*S**c**o**r**e*\] =  − 14.4 + 0.0004*E**p**i**s**o**d**e**s* + 0.16*R**a**t**i**n**g*<sub>*P**G* − 13</sub> + 0.05*R**a**t**i**n**g*<sub>*P**G*</sub> + 0.22*R**a**t**i**n**g*<sub>*R*</sub> − 0.16*R**a**t**i**n**g*<sub>*R*+</sub> − 0.21*R**a**t**i**n**g*<sub>*R**x*</sub> + 0.000001*M**e**m**b**e**r**s* + 0.02*D**u**r**a**t**i**o**n* + 0.02*A**c**t**i**o**n* + 0.15*C**o**m**e**d**y* + 0.31*D**r**a**m**a* + 0.26*H**i**s**t**o**r**i**c**a**l* + 0.06*M**a**g**i**c* + 0.04*S**c**h**o**o**l* + 0.28*S**h**o**u**n**e**n* + 0.23*S**l**i**c**e* *o**f* *L**i**f**e* + 0.01*S**t**a**r**t**Y**e**a**r* + 0.03*N**u**m*. *Y**e**a**r**s* *R**u**n**n**i**n**g*
+E\[Score\] = -14.4 + 0.0004Episodes + 0.16Rating\_{PG-13} +
+0.05Rating\_{PG} + 0.22Rating\_{R} - 0.16Rating\_{R+} -
+0.21Rating\_{Rx} + 0.000001Members + 0.02Duration + 0.02Action +
+0.15Comedy + 0.31Drama + 0.26Historical + 0.06Magic + 0.04School +
+0.28Shounen + 0.23Slice of Life + 0.01Start Year + 0.03Num. Years
+Running
 
 where *E*\[*S**c**o**r**e*\] is the expected value of the score of each
 anime.
