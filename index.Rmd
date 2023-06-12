@@ -5,7 +5,7 @@ always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(lubridate)
 library(readr)
@@ -16,6 +16,14 @@ library(data.table)
 library(ggplot2)
 library(ggthemes)
 library(gganimate)
+library(ggcorrplot)
+library(caret)
+library(randomForest)
+library(gam)
+library(MASS)
+library(car)
+library(corpcor)
+library(corrplot)
 
 ```
 
@@ -167,48 +175,95 @@ studio_df <- as.data.frame(sort(table(studio_vec)), decreasing = T) %>%
 
 keep_studios <- as.character(studio_df$studio_vec)
 
-studios <- cbind(anime_full_df$mal_id, anime_full_df$studios, 
-                as.data.frame(matrix(ncol = length(keep_studios), 
-                     nrow = nrow(anime_full_df))))
-
-colnames(studios) <- c("mal_id", "studios", keep_studios)
-
-for (i in 1:length(keep_studios)){
-  for (j in 1:nrow(studios)) {
-  
-  if (str_detect(studios[j, "studios"], keep_studios[i]) & 
-      !is.na(studios[j, "studios"])){
-    studios[j, keep_studios[i]] <- 1
-  }
-    else{
-      studios[j, keep_studios[i]] <- 0
-    }
-  }
-}
+# studios <- cbind(anime_full_df$mal_id, anime_full_df$studios,
+#                 as.data.frame(matrix(ncol = length(keep_studios),
+#                      nrow = nrow(anime_full_df))))
+# 
+# colnames(studios) <- c("mal_id", "studios", keep_studios)
+# 
+# for (i in 1:length(keep_studios)){
+#   for (j in 1:nrow(studios)) {
+# 
+#   if (str_detect(studios[j, "studios"], keep_studios[i]) &
+#       !is.na(studios[j, "studios"])){
+#     studios[j, keep_studios[i]] <- 1
+#   }
+#     else{
+#       studios[j, keep_studios[i]] <- 0
+#     }
+#   }
+# }
 
 
 ```
 
+````{r}
+
+# studios_use <- studios %>%
+#   select(-studios)
+
+```
 
 ```{r}
 
-tst <- anime_full_df %>%
-  separate(studios, c("studio1", "studio2", "studio3", "studio4"), ", ")
-
-tst$num_studios <- rowSums(!is.na(tst[, c("studio1", "studio2", "studio3",
-                                   "studio4")]), na.rm = T)
+# anime_full_df <- left_join(anime_full_df, genres_use)
 
 ```
+
+```{r}
+# retain info on top 2 animation studios
+anime_full_df <- anime_full_df %>%
+  separate(studios, c("studio1", "studio2", "studio3", "studio4"), ", ")
+
+anime_full_df$num_studios <- rowSums(!is.na(tst[, c("studio1", "studio2", "studio3",
+                                   "studio4")]), na.rm = T)
+
+
+anime_full_df <- anime_full_df %>%
+  select(-c(studio3, studio4)) %>%
+  mutate(studio1 = ifelse(studio1 %in% keep_studios, studio1,
+                          ifelse(is.na(studio1), NA, "Other")),
+         studio2 = ifelse(studio2 %in% keep_studios, studio2,
+                          ifelse(is.na(studio2), NA, "Other")))
+
+```
+
+
 
 I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. Additionally, the `genres`,  `aired`, and `studios` variables were reformatted for the purpose of analysis. *Note: For genre, we retained information about genres that had a frequency of at least 2% of all the genres listed in the dataset.
 
 All data cleaning was conducted using NumPy and Pandas in Python. The code for data cleaning can be found here. 
 
 ```{r, include=FALSE}
-# count unique anime
-length(unique(anime_full_df$mal_id))
 
+anime_full_df <- anime_full_df %>%
+  select(-c(genres, start_date, end_date, duration)) 
 
+anime_full_df <- anime_full_df %>%
+  clean_names() %>%
+  mutate(type = as.factor(type),
+         studio1 = as.factor(studio1),
+         studio2 = as.factor(studio2),
+         source = as.factor(source),
+         rating = as.factor(rating),
+         action = as.factor(action),
+         adventure = as.factor(adventure),
+         comedy = as.factor(comedy),
+         drama = as.factor(drama),
+         fantasy = as.factor(fantasy),
+         hentai = as.factor(hentai),
+         historical = as.factor(historical),
+         kids = as.factor(kids),
+         magic = as.factor(magic),
+         mecha = as.factor(mecha),
+         romance = as.factor(romance),
+         school = as.factor(school),
+         sci_fi = as.factor(sci_fi),
+         shounen = as.factor(shounen),
+         slice_of_life = as.factor(slice_of_life),
+         supernatural = as.factor(supernatural),
+         start_year = as.numeric(start_year),
+         end_year = as.numeric(end_year))
 
 ```
 
@@ -224,6 +279,121 @@ There are a few questions that we hope to answer using this dataset.
 
 4)  Can the synopsis of an anime be a good indicator of anime ranking?
 
-### The Pinnacle of Anime: What are the most important contributors?
+### The Pinnacle of Anime: What are the most important contributors to predicting the popularity (score) of an anime?
+
+We start by checking for multicollinearity between our predictors of interest in order to reduce dimensionality and stabilize the variance of our estimated coefficients. Because of their direct relationship with the dependent variable of interest (score), we omit `ranked`, `popularity`, and `score_completed`
+
+
+```{r}
+anime_full_df <- as.data.frame(anime_full_df)
+
+anime_full_mod_df <- anime_full_df %>%
+  dplyr::select(-c(mal_id, name, sypnopsis, hentai, 
+                   ranked, popularity, score_comp))
+
+```
+
+
+
+```{r}
+
+corrplot(cor(select_if(na.omit(anime_full_mod_df %>% dplyr::select(-score)), 
+                               is.numeric)))
+
+```
+
+Notably, number of members, favorites, watching, completed, on-hold, dropped, and plan to watch are moderately to highly correlated. In order to correct for this, we will retain number of community members in each anime's group as the representation of membership to the anime's fanbase in our dataset. Additionally, start year is highly correlated with end year so we'll just retain information on start year and instead create a variable representing number of years running.
+
+```{r}
+
+anime_full_mod_df_use <- anime_full_mod_df %>%
+  dplyr::select(-c(favorites, watching, completed, on_hold, dropped, 
+                   plan_to_watch)) %>%
+  mutate(num_years_running = end_year - start_year) %>%
+  dplyr::select(-end_year)
+
+```
+
+
+```{r}
+
+corrplot(cor(select_if(na.omit(anime_full_mod_df_use), is.numeric)))
+
+```
+
+After removing the variables strongly correlated with number of variables, we have a better distribution of variables without unexpected multicollinearity. We move on to stepwise selection with these predictors as well as our non-numeric predictors to choose the best variables to model MyAnimeList score. 
+
+To recall, we retain the following variables as the subset of predictors to choose from: type, number of episodes, primary studio, secondary studio, source, rating, number of members in that anime's community, duration in minutes per episode, airing start year, number of animation studios working on the anime, and binary/indication variables for the following variables: Action, Adventure, Comedy, Drama, Fantasy, Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice of Life, and Supernatural.
+
+After going through stepwise selection, we yield the following model: 
+
+$$Score ~ Episodes + Rating + Members + Duration + Action + Comedy + Drama + Historical +$$
+
+$$Magic + School + Shounen + Slice\: of\: Life + Start Year + Num. \:Years\: Running$$
+
+
+```{r}
+
+# Fit the full model 
+full.model <- lm(score ~., data = na.omit(anime_full_mod_df_use))
+# backwards regression model
+step.model <- stepAIC(full.model, direction = "both", 
+                      trace = FALSE)
+#summary(step.model)
+
+
+fin_mod <- lm(formula = score ~ episodes + rating + members + duration_mins + 
+    action + comedy + drama + historical + magic + school + shounen + 
+    slice_of_life + start_year + num_years_running, data = anime_full_mod_df_use)
+
+summary(fin_mod)
+
+# remove ranked, popularity, score_comp
+```
+
+These are the genres that are more likely to have a high score on MyAnimeList.net in order:
+
+1) Drama
+
+2) Historical
+
+3) Shounen
+
+4) Slice of Life
+
+5) Comedy
+
+6) Magic 
+
+7) School
+
+8) Action
+
+Now, you may be wondering for example, \textit{how come action isn't ranked higher on this list?!} I mean, from absolute modern day anime titans like My Hero Academia and Jujutsu Kaisen, it's no doubt that action anime encompass a huge portion of the hits right now. However... action is also the most frequently reported genre in 2020. So while it's a standout among the hits, in the grand scheme of things, while there are amazing action anime that are being ranked and perceived well, there are also action anime out there that are performing less favorably among crowds. In fact, it seems that the action genre may even be oversaturated with the good, the bad, and the ugly.   In other words, purely slapping the genre of action on your anime doesn't make it an automatic hit. Yes, it's true. Audiences won't just froth at the mouth at characters going toe-to-toe in combat without it having that special 'umph' to it that really makes it a generational favorite. 
+
+```{r}
+
+
+
+```
+
+```{r}
+#train random forest model and calculate feature importance
+rf = randomForest(x= anime_full_df[, c(4:18, 20:40)],
+                  y= anime_full_df[, "score"])
+var_imp <- varImp(rf, scale = FALSE)
+
+
+
+```
+
+```{r}
+var_imp_df <- data.frame(cbind(variable = rownames(var_imp), score = var_imp[,1]))
+var_imp_df$score <- as.double(var_imp_df$score)
+var_imp_df[order(var_imp_df$score,decreasing = TRUE),]
+
+```
+
+
 
 ### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as 'completed'?
