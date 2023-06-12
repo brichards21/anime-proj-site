@@ -170,7 +170,7 @@ anime_full_df$end_year <- str_sub(anime_full_df$end_date, -4, -1)
 
 studio_vec <- unlist(strsplit(anime_full_df$studios, ", "))
 
-length(unique(studio_vec)) # 601 studios
+#length(unique(studio_vec)) # 601 studios
 
 studio_df <- as.data.frame(sort(table(studio_vec)), decreasing = T) %>%
   filter(Freq >= 40)
@@ -333,9 +333,7 @@ In order to validate the generalizability, we will perform stepwise selection on
 
 After going through stepwise selection, we yield the following model: 
 
-$$E[Score] ~ -14.4 + 0.0004Episodes + 0.16Rating_{PG-13} + 0.05Rating_{PG} + 0.22Rating_{R} - 0.16Rating_{R+} - 0.21Rating_{Rx} + 0.000001Members + 0.02Duration + 0.02Action + 0.15Comedy + 0.31Drama + 0.26Historical +$$
-
-$$0.06Magic + 0.04School + 0.28Shounen + 0.23Slice\: of\: Life + 0.01Start Year + 0.03Num. \:Years\: Running$$
+$$E[Score] = -14.4 + 0.0004Episodes + 0.16Rating_{PG-13} + 0.05Rating_{PG} + 0.22Rating_{R} - 0.16Rating_{R+} - 0.21Rating_{Rx} + 0.000001Members + 0.02Duration + 0.02Action + 0.15Comedy + 0.31Drama + 0.26Historical + 0.06Magic + 0.04School + 0.28Shounen + 0.23Slice\: of\: Life + 0.01Start Year + 0.03Num. \:Years\: Running$$
 
 where $E[Score]$ is the expected value of the score of each anime.
 
