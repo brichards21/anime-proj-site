@@ -68,8 +68,8 @@ We retained the following information from the `anime` dataset:
 
 <table>
 <colgroup>
-<col style="width: 33%" />
-<col style="width: 66%" />
+<col style="width: 34%" />
+<col style="width: 65%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -189,8 +189,8 @@ Thus, we have two more columns of interest in our dataset.
 
 <table>
 <colgroup>
-<col style="width: 27%" />
-<col style="width: 72%" />
+<col style="width: 30%" />
+<col style="width: 69%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -219,7 +219,50 @@ even if it was just a two-episode stint. This reduced our pool to 9,181
 anime. Additionally, the `genres`, `aired`, and `studios` variables were
 reformatted for the purpose of analysis. \*Note: For genre, we retained
 information about genres that had a frequency of at least 2% of all the
-genres listed in the dataset.
+genres listed in the dataset. This reformatting led to the addition of a
+few more columns to make the data in the raw dataset more digestible:
+
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Col1</th>
+<th>Col2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Multiple Indicator Genre Variables</td>
+<td>indicator (0/1) variables for genres Action, Adventure, Comedy,
+Drama, Fantasy, Hentai, Historical, Kids, Magic, Mecha, Romance, School,
+Sci-Fi, Shounen, Slice of Life, Supernatural</td>
+</tr>
+<tr class="even">
+<td>Start Year</td>
+<td>the year the anime started airing</td>
+</tr>
+<tr class="odd">
+<td>End Year</td>
+<td>the year the anime ended airing - this value is NA is the anime is
+currently airing</td>
+</tr>
+<tr class="even">
+<td>Primary Studio</td>
+<td>the first studio listed in the ‘studios’ variable</td>
+</tr>
+<tr class="odd">
+<td>Secondary Studio</td>
+<td>the second studio listed in the ‘studios’ variable</td>
+</tr>
+<tr class="even">
+<td>Number of Studios</td>
+<td>the number of studios working/that worked on the anime</td>
+</tr>
+</tbody>
+</table>
 
 All data cleaning was conducted using NumPy and Pandas in Python. The
 code for data cleaning can be found here.
@@ -451,14 +494,23 @@ set to see how well it performs on data it hasn’t seen!
 We’ll use mean absolute error (MAE) as our measure of score prediction
 error, which is measured as such:
 
-![](./img/mae.png)
-
 <img src="img/mae.png" width="390" style="display: block; margin: auto;" />
 
     ##      RMSE        R2 
     ## 0.5957100 0.3634162
 
     ## [1] 0.4951631
+
+We use our model to predict on our test data and collect prediction
+error on each observation. The plot below shows that the distribution of
+prediction errors seems to roughly normally distributed with a maximum
+error observed of 2.64 and a minimum error of -1.79. To put things into
+context, on a scale of 1-10, which is the scale of MAL score, an error
+of 2.64 can be a gross overestimation of an anime’s score. This maximum
+value seems to be an outlier though as the majority of prediction errors
+hover around 0.
+
+![](index_files/figure-markdown_strict/unnamed-chunk-27-1.png)
 
 ### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as ‘completed’?
 

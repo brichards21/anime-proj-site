@@ -28,6 +28,7 @@ library(GGally)
 library(scales)
 library(Metrics)
 library(latex2exp)
+library(egg)
 
 ```
 
@@ -562,8 +563,8 @@ We use our model to predict on our test data and collect prediction error on eac
 
 ```{r}
 
-ggplot(test_score_pred, aes(x = 1:nrow(test_score_pred), y = pred - score)) +
-  geom_point() +
+dot_pred_error <- ggplot(test_score_pred, aes(x = 1:nrow(test_score_pred), y = pred - score)) +
+  geom_point(col = "orange") +
   geom_hline(yintercept = max(test_score_pred$pred - test_score_pred$score),
              col = "red", linetype = "dashed") +
   geom_hline(yintercept = min(test_score_pred$pred - test_score_pred$score),
@@ -574,19 +575,24 @@ ggplot(test_score_pred, aes(x = 1:nrow(test_score_pred), y = pred - score)) +
        x = "observation") +
   ylim(-3, 3.5) +
   theme_economist() +
-  annotate(geom="text", x = 1200, y = 3, label = "Max Error: 2.64",
-           col = "red", size = 5) +
-   annotate(geom="text", x = 1200, y = -2.2, label = "Min Error: -1.79",
-           col = "red", size = 5)
+  annotate(geom="text", x = 1100, y = 3, label = "Max Error: 2.64",
+           col = "red", size = 4) +
+   annotate(geom="text", x = 1100, y = -2.2, label = "Min Error: -1.79",
+           col = "red", size = 4) +
+  theme(plot.title=element_text(size=10))
 
-ggplot(test_score_pred, aes(x = pred - score)) +
-  geom_density(fill = ) +
+hist_pred_error <- ggplot(test_score_pred, aes(x = pred - score)) +
+  geom_density(fill = "orange", alpha = 0.6) +
   labs(x = TeX(r'($Score_{prediction} - Score_{true}$)'),
        title = "Distribtion of Prediction Error") +
-  theme_economist()
+  theme_economist() +
+  theme(plot.title=element_text(size=10))
 
 # 2.64 max 
 # -1.79 min 
+
+
+ggarrange(hist_pred_error, dot_pred_error, ncol = 2)
 
 ```
 
