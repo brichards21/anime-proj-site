@@ -68,8 +68,8 @@ We retained the following information from the `anime` dataset:
 
 <table>
 <colgroup>
-<col style="width: 31%" />
-<col style="width: 68%" />
+<col style="width: 33%" />
+<col style="width: 66%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -189,8 +189,8 @@ Thus, we have two more columns of interest in our dataset.
 
 <table>
 <colgroup>
-<col style="width: 26%" />
-<col style="width: 73%" />
+<col style="width: 27%" />
+<col style="width: 72%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -451,7 +451,9 @@ set to see how well it performs on data it hasn’t seen!
 We’ll use mean absolute error (MAE) as our measure of score prediction
 error, which is measured as such:
 
-$\frac{\sum\_{i=1}^n |Score\_{prediction} - Score\_{true}}{n}$
+<center>
+![](./img/mae.png)
+</center>
 
     ##      RMSE        R2 
     ## 0.5957100 0.3634162

@@ -61,7 +61,7 @@ The `anime` dataset, which is the main dataset of interest detailed the core inf
 We retained the following information from the `anime` dataset:
 
 | Column        | Description                                                                                       |
-|-----------------------|-------------------------------------------------|
+|------------------------|------------------------------------------------|
 | MAL_ID        | MyAnimelist ID of the anime. Unique for each anime.                                               |
 | Name          | full name of the anime                                                                            |
 | Score         | average score of the anime given from all users in the MyAnimelist database. Score out of 10 pts. |
@@ -92,7 +92,7 @@ The `rating_complete` data only considers anime that users have marked as 'compl
 Thus, we have two more columns of interest in our dataset.
 
 | Column          | Description                                                                                                                             |
-|-------------------|-----------------------------------------------------|
+|--------------------|----------------------------------------------------|
 | Synopsis        | string with the synopsis of the anime                                                                                                   |
 | Score_completed | average score of the anime given from users that have marked the anime as 'completed' in the MyAnimelist database. Score out of 10 pts. |
 
@@ -381,7 +381,6 @@ In regard to content ratings, we list the rating labels in order of highest to l
 
 6)  Rx - Hentai
 
-
 Notably, there doesn't seem to be a linear relationship between rating and score. While generally audiences tend to like content that are on the maturer side (rated PG-13 and R - 17+), there's a limit to exactly *how* spicy audiences like their content to be cooked up for them. Particularly, as we see an upward trend in score from ratings G, PG, PG-13, and R- 17+, the next too more intense levels of content, R+ for mild nudity, and Rx for full blown Hentai are in fact scored the lowest on the list. Meaning, we mature themes seem to be a hit among the MAL community, but explicit content... not so much.
 
 ![](./img/watch_tv.gif)
@@ -529,14 +528,17 @@ Additionally, we can take into account how many years an anime has been running.
 
 ```
 
-Now that we've summarized what our model is trying to tell us about the anime in our training set, we can apply our model to our withheld test set to see how well it performs on data it hasn't seen! 
+Now that we've summarized what our model is trying to tell us about the anime in our training set, we can apply our model to our withheld test set to see how well it performs on data it hasn't seen!
 
-We'll use mean absolute error (MAE) as our measure of score prediction error, which is measured as such: 
+We'll use mean absolute error (MAE) as our measure of score prediction error, which is measured as such:
 
-$\frac{\sum_{i=1}^n |Score_{prediction} - Score_{true}}{n}$
+<center>
+![](./img/mae.png)
+</center>
 
 
 ```{r}
+
 
 pred <- predict(fin_mod, newdata = test)
 rmse <- sqrt(sum((pred - test$score)^2, na.rm = T)/length(test$score[!is.na(test$score)]))
@@ -570,7 +572,6 @@ anime_full_df <- anime_full_df %>%
   mutate(score_diff = score - score_comp)
 
 ```
-
 
 ```{r}
 
