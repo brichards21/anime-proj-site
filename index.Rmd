@@ -532,9 +532,16 @@ Now that we've summarized what our model is trying to tell us about the anime in
 
 We'll use mean absolute error (MAE) as our measure of score prediction error, which is measured as such:
 
-<center>
+
 ![](./img/mae.png)
-</center>
+
+
+```{r, fig.align='center'}
+
+knitr::include_graphics("img/mae.png")
+
+
+```
 
 
 ```{r}

@@ -451,9 +451,9 @@ set to see how well it performs on data it hasn’t seen!
 We’ll use mean absolute error (MAE) as our measure of score prediction
 error, which is measured as such:
 
-<center>
 ![](./img/mae.png)
-</center>
+
+<img src="img/mae.png" width="390" style="display: block; margin: auto;" />
 
     ##      RMSE        R2 
     ## 0.5957100 0.3634162
