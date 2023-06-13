@@ -27,6 +27,7 @@ library(corrplot)
 library(GGally)
 library(scales)
 library(Metrics)
+library(latex2exp)
 
 ```
 
@@ -61,7 +62,7 @@ The `anime` dataset, which is the main dataset of interest detailed the core inf
 We retained the following information from the `anime` dataset:
 
 | Column        | Description                                                                                       |
-|------------------------|------------------------------------------------|
+|-------------------------|-----------------------------------------------|
 | MAL_ID        | MyAnimelist ID of the anime. Unique for each anime.                                               |
 | Name          | full name of the anime                                                                            |
 | Score         | average score of the anime given from all users in the MyAnimelist database. Score out of 10 pts. |
@@ -92,7 +93,7 @@ The `rating_complete` data only considers anime that users have marked as 'compl
 Thus, we have two more columns of interest in our dataset.
 
 | Column          | Description                                                                                                                             |
-|--------------------|----------------------------------------------------|
+|----------------------|--------------------------------------------------|
 | Synopsis        | string with the synopsis of the anime                                                                                                   |
 | Score_completed | average score of the anime given from users that have marked the anime as 'completed' in the MyAnimelist database. Score out of 10 pts. |
 
@@ -226,7 +227,16 @@ anime_full_df <- anime_full_df %>%
 
 ```
 
-I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. Additionally, the `genres`, `aired`, and `studios` variables were reformatted for the purpose of analysis. \*Note: For genre, we retained information about genres that had a frequency of at least 2% of all the genres listed in the dataset.
+I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. Additionally, the `genres`, `aired`, and `studios` variables were reformatted for the purpose of analysis. \*Note: For genre, we retained information about genres that had a frequency of at least 2% of all the genres listed in the dataset. This reformatting led to the addition of a few more columns to make the data in the raw dataset more digestible:
+
+| Col1                               | Col2                                                                                                                                                                                  |
+|------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Multiple Indicator Genre Variables | indicator (0/1) variables for genres Action, Adventure, Comedy, Drama, Fantasy, Hentai, Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice of Life, Supernatural |
+| Start Year                         | the year the anime started airing                                                                                                                                                     |
+| End Year                           | the year the anime ended airing - this value is NA is the anime is currently airing                                                                                                   |
+| Primary Studio                     | the first studio listed in the 'studios' variable                                                                                                                                     |
+| Secondary Studio                   | the second studio listed in the 'studios' variable                                                                                                                                    |
+| Number of Studios                  | the number of studios working/that worked on the anime                                                                                                                                |
 
 All data cleaning was conducted using NumPy and Pandas in Python. The code for data cleaning can be found here.
 
@@ -521,20 +531,9 @@ Now, you may be wondering for example, \textit{how come action isn't ranked high
 
 Additionally, we can take into account how many years an anime has been running. Evidently, anime that have been on-going for longer have significantly higher scores than those that have not. Perhaps being in the good graces of key audiences is what have allowed them to persist for so long. According to our model, with each additional year of runtime, the score value is expected to increase by 0.03.
 
-```{r}
-# var_imp_df <- data.frame(cbind(variable = rownames(var_imp), score = var_imp[,1]))
-# var_imp_df$score <- as.double(var_imp_df$score)
-# var_imp_df[order(var_imp_df$score,decreasing = TRUE),]
-
-```
-
 Now that we've summarized what our model is trying to tell us about the anime in our training set, we can apply our model to our withheld test set to see how well it performs on data it hasn't seen!
 
 We'll use mean absolute error (MAE) as our measure of score prediction error, which is measured as such:
-
-
-![](./img/mae.png)
-
 
 ```{r, fig.align='center'}
 
@@ -542,7 +541,6 @@ knitr::include_graphics("img/mae.png")
 
 
 ```
-
 
 ```{r}
 
@@ -557,6 +555,38 @@ test_score_pred <- as.data.frame(cbind(score = test$score, pred)) %>%
 mae(test_score_pred$score, test_score_pred$pred)
 
 
+
+```
+
+We use our model to predict on our test data and collect prediction error on each observation. The plot below shows that the distribution of prediction errors seems to roughly normally distributed with a maximum error observed of 2.64 and a minimum error of -1.79. To put things into context, on a scale of 1-10, which is the scale of MAL score, an error of 2.64 can be a gross overestimation of an anime's score. This maximum value seems to be an outlier though as the majority of prediction errors hover around 0.
+
+```{r}
+
+ggplot(test_score_pred, aes(x = 1:nrow(test_score_pred), y = pred - score)) +
+  geom_point() +
+  geom_hline(yintercept = max(test_score_pred$pred - test_score_pred$score),
+             col = "red", linetype = "dashed") +
+  geom_hline(yintercept = min(test_score_pred$pred - test_score_pred$score),
+             col = "red", linetype = "dashed") + 
+   geom_hline(yintercept = 0,
+             col = "black") +
+  labs(title = "Prediction Error by Observation", y = TeX(r'($Score_{prediction} - Score_{true}$)'),
+       x = "observation") +
+  ylim(-3, 3.5) +
+  theme_economist() +
+  annotate(geom="text", x = 1200, y = 3, label = "Max Error: 2.64",
+           col = "red", size = 5) +
+   annotate(geom="text", x = 1200, y = -2.2, label = "Min Error: -1.79",
+           col = "red", size = 5)
+
+ggplot(test_score_pred, aes(x = pred - score)) +
+  geom_density(fill = ) +
+  labs(x = TeX(r'($Score_{prediction} - Score_{true}$)'),
+       title = "Distribtion of Prediction Error") +
+  theme_economist()
+
+# 2.64 max 
+# -1.79 min 
 
 ```
 
