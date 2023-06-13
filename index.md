@@ -36,7 +36,7 @@ audiences are receiving this media?
 Well, look no further! In comes
 [MyAnimeList.net](https://myanimelist.net/).
 
-MyAnimeList.net is an online platform dedicated to providing a
+MyAnimeList.net (MAL) is an online platform dedicated to providing a
 comprehensive database and community-driven hub for anime and manga
 enthusiasts. Serving as a centralized resource, the website allows users
 to create personal profiles and maintain detailed lists of anime series,
@@ -68,8 +68,8 @@ We retained the following information from the `anime` dataset:
 
 <table>
 <colgroup>
-<col style="width: 27%" />
-<col style="width: 72%" />
+<col style="width: 31%" />
+<col style="width: 68%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -189,8 +189,8 @@ Thus, we have two more columns of interest in our dataset.
 
 <table>
 <colgroup>
-<col style="width: 19%" />
-<col style="width: 80%" />
+<col style="width: 26%" />
+<col style="width: 73%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -280,12 +280,12 @@ remaining 20% will be saved to test the accuracy of our model on.
 
 After going through stepwise selection, we yield the following model:
 
-E\[Score\] = -14.4 + 0.0004Episodes + 0.16Rating\_{PG-13} +
-0.05Rating\_{PG} + 0.22Rating\_{R} - 0.16Rating\_{R+} -
-0.21Rating\_{Rx} + 0.000001Members + 0.02Duration + 0.02Action +
+*E\[Score\] = -14.4 + 0.0004Episodes + 0.16Rating<sub>PG-13</sub> +
+0.05Rating<sub>PG</sub>+ 0.22RatingR - 0.16Rating<sub>R+</sub> -
+0.21Rating<sub>Rx</sub> + 0.000001Members + 0.02Duration + 0.02Action +
 0.15Comedy + 0.31Drama + 0.26Historical + 0.06Magic + 0.04School +
 0.28Shounen + 0.23Slice of Life + 0.01Start Year + 0.03Num. Years
-Running
+Running*
 
 where *E*\[*S**c**o**r**e*\] is the expected value of the score of each
 anime.
@@ -329,8 +329,75 @@ anime.
     ## Multiple R-squared:  0.3634, Adjusted R-squared:  0.3612 
     ## F-statistic: 161.1 on 18 and 5078 DF,  p-value: < 2.2e-16
 
-These are the genres that are more likely to have a high score on
-MyAnimeList.net in order:
+So, what does this tell us? A few things actually. Among the anime in
+our training data, the more **episodes** that an anime has, the more
+likely it is to be scored highly on MAL. With each new additional
+episode in an anime, we expect a 0.0004 increase in score.
+
+In regard to content ratings, we list the rating labels in order of
+highest to lowest scored, holding all other variables in our model
+constant:
+
+1.  R - 17+ (violence & profanity)
+
+2.  PG-13 - Teens 13 or older
+
+3.  PG - Children
+
+4.  G - All Ages
+
+5.  R+ - Mild Nudity
+
+6.  Rx - Hentai
+
+Notably, there doesn’t seem to be a linear relationship between rating
+and score. While generally audiences tend to like content that are on
+the maturer side (rated PG-13 and R - 17+), there’s a limit to exactly
+*how* spicy audiences like their content to be cooked up for them.
+Particularly, as we see an upward trend in score from ratings G, PG,
+PG-13, and R- 17+, the next too more intense levels of content, R+ for
+mild nudity, and Rx for full blown Hentai are in fact scored the lowest
+on the list. Meaning, we mature themes seem to be a hit among the MAL
+community, but explicit content… not so much.
+
+![](./img/watch_tv.gif)
+
+As expected, number of members in that anime’s MAL group is positively
+associated with that anime’s score. For every one additional member, we
+expect a 0.000001 increase in score, holding all other variables in the
+model constant. While this change seems small, it’s helpful to keep in
+mind the range of values in each anime’s group.
+
+![](index_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+
+In our train dataset, the number of members within each anime’s group
+ranges from 1 to 2,589,552 with a median value of 4,568 which is a
+*huge* range! This means, for example, we expect the score of an anime
+with a member base the size of the median value of 4,568 to increase by
+an estimated 0.005 (0.000001\*4,568 members) points.
+
+Now let’s talk duration per episode. Our model shows that there is a
+positive association between the number of episodes in a season, and the
+score of an anime. The more the merrier, one might say. With each
+additional minute per episode, the score is expected to increase by
+0.02. Of course, the expectation of duration is different by type
+(e.g. TV, Movie, OVA).
+
+![](index_files/figure-markdown_strict/unnamed-chunk-21-1.png)
+
+Though, there’s no hard and fast rules for how long these mediums can
+be, we see from the scatterplot above that while anime for TV typically
+tend to keep within 30 minutes or less, mediums like OVAs are more
+variable in their length (see scatterplot above). Additionally,
+specials, music videos, and ONAs tend to be shorter and movies tend to
+be longer.
+
+How about genre? Do some genres tend to be more well received than
+others, at least in regard to score?
+
+Well, according to our model, these are the genres that are scored from
+highest to lowest on MyAnimeList.net in order, holding all other
+variables in our model constant:
 
 1.  Drama
 
@@ -348,18 +415,82 @@ MyAnimeList.net in order:
 
 8.  Action
 
-Now, you may be wondering for example, I mean, from absolute modern day
-anime titans like My Hero Academia and Jujutsu Kaisen, it’s no doubt
-that action anime encompass a huge portion of the hits right now.
-However… action is also the most frequently reported genre in 2020. So
-while it’s a standout among the hits, in the grand scheme of things,
-while there are amazing action anime that are being ranked and perceived
-well, there are also action anime out there that are performing less
-favorably among crowds. In fact, it seems that the action genre may even
-be oversaturated with the good, the bad, and the ugly. In other words,
-purely slapping the genre of action on your anime doesn’t make it an
-automatic hit. Yes, it’s true. Audiences won’t just froth at the mouth
-at characters going toe-to-toe in combat without it having that special
-‘umph’ to it that really makes it a generational favorite.
+Now, you may be wondering for example, I mean, from My Hero Academia to
+Jujutsu Kaisen, it’s no doubt that action anime encompass a huge portion
+of the hits right now. However… action is also the most frequently
+reported genre in 2020. So while it’s a standout among the hits, in the
+grand scheme of things, while there are amazing action anime that are
+being ranked and perceived well, there are also action anime out there
+that are performing less favorably among crowds. In fact, it seems that
+the action genre may even be oversaturated with the good, the bad, and
+the ugly. In other words, purely slapping the genre of action on your
+anime doesn’t make it an automatic hit. Yes, it’s true. Audiences won’t
+just froth at the mouth at characters going toe-to-toe in combat without
+it having that special ‘umph’ to it that really makes it a generational
+favorite.
+
+**This just in, newer anime are in!** According to our model, with each
+additional year of an anime airing, we expect a score increase of 0.01.
+Of course, this may just be a consequence of recency bias and how anime
+are often more likely to be popular and perceived well in their prime
+(i.e. when they’re still airing and fresh off the presses). But it’s
+interesting to think how year-to-year advancements in animation and
+technology may have contributed to the perception of newer anime.
+
+Additionally, we can take into account how many years an anime has been
+running. Evidently, anime that have been on-going for longer have
+significantly higher scores than those that have not. Perhaps being in
+the good graces of key audiences is what have allowed them to persist
+for so long. According to our model, with each additional year of
+runtime, the score value is expected to increase by 0.03.
+
+Now that we’ve summarized what our model is trying to tell us about the
+anime in our training set, we can apply our model to our withheld test
+set to see how well it performs on data it hasn’t seen!
+
+We’ll use mean absolute error (MAE) as our measure of score prediction
+error, which is measured as such:
+
+$\frac{\sum\_{i=1}^n |Score\_{prediction} - Score\_{true}}{n}$
+
+    ##      RMSE        R2 
+    ## 0.5957100 0.3634162
+
+    ## [1] 0.4951631
 
 ### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as ‘completed’?
+
+Alright! We’ve talked about the key predictors of anime performance and
+to what magnitude these factors are expected to affect MAL score. We do
+well to recall that MAL score is averaged from scores assigned to anime
+from *all* users. A question of interest - does this averaged score
+significantly differ from the average score given only by users that
+have marked that anime as ‘completed’? And if so, could this give us
+insight that users may preemptively score anime or that users that may
+score anime before seeing the whole thing may have held a different
+opinion if they had seen the whole thing through? Let’s investigate.
+
+Earlier, we were able to left-join information on scores given to anime
+by users that have marked those anime as ‘completed’ on MAL.
+
+In order to test this, we may derive a vector of pairwise differences
+between the MAL score and the average score given by users that have
+indicated that they have completed the respective anime:
+
+Score<sub>MAL</sub> - Score<sub>Completed</sub>
+
+If the scores are not significantly different, we may expect that this
+vector of differences follow a standard normal distribution with mean 0
+and standard deviation 1 (i.e. N ~ (0, 1)).
+
+### How long is too long?
+
+We’ve all heard the age-old qualm with some anime these days. Though
+fans alike love it when our favorite storylines and characters keep
+shoveling quality content into our trying lives, when is enough enough?
+Die hard fans can all name at least one show where they felt the story
+was dragged on and on when really, it would’ve just been optimal to end
+it several episodes or even seasons ago.
+
+So, how long is too long? Is there an optimal range of episodes that an
+anime should be in order to leave the audience satisfied?
