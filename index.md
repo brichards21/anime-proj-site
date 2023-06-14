@@ -539,10 +539,6 @@ vector of differences follow a normal distribution centered around 0.
 
 ![](index_files/figure-markdown_strict/unnamed-chunk-30-1.png)
 
-    ## [1] 0.02153778
-
-    ## [1] 0.2266719
-
 The distribution of differences between scores (MAL Score - Completed
 Users Score) is centered around a mean of 0.02 with a standard deviation
 of 0.23. A mean of 0.02 which is positive, mean that MAL scores
@@ -556,7 +552,7 @@ T-test**. The paired-sample t-test can be used to determine whether the
 mean difference between pairs of measurements is 0 or not. Thus, the
 following hypotheses are tested:
 
-<img src="img/score_t_test.png" width="70%" style="display: block; margin: auto;" />
+<img src="img/score_t_test.png" width="100px" style="display: block; margin: auto;" />
 
 We display the results of the t-test below:
 
@@ -598,47 +594,58 @@ So, how long is too long? Is there an optimal range of episodes that an
 anime should be in order to leave the audience satisfied?
 
 There are a lot of ways to try and answer this question, but I’m going
-to do it my means of ordinal logistic regression. Recall that score is a
-numeric value. In order to conduct ordinal logistic regression, we need
-to categorize score in ordered categories. Ordinal logistic regression
-is used to model the relationship between an ordinal response variable
-and one or more explanatory variables. Particularly, we’ll be
-categorizing score into three separate score categories: low, medium,
-high. We will categorize anime with scores less than 6 in the low
-category, greater than or equal to 8 in the high category, and all other
-anime into the medium category. We will use episode count and various
-transformations of episode count as the predictor variable(s) of
-interest. Additionally, we will only consider anime made for TV
-consumption to keep the anime relatively within the same playing field
-in terms of episodic behavior instead of also including irregular
-mediums like movies, speicals, and OVAs.
+to do it by means of regressing number of episodes on anime score.
+Recall that score and episodes are both numeric values. Additionally, we
+will only consider anime made for TV consumption to keep the anime
+relatively within the same playing field in terms of episodic behavior
+instead of also including irregular mediums like movies, specials, and
+OVAs.
 
-After categorizing the score variable, we get that only 11.1% of anime
-fall into the low category on MAL, 8.5% of anime fall into the high
-category, and the remaining 80.5% of anime fall into the medium
-category.
+First, we chose to synthesize the number of anime that fall under each
+episode count. We arbitrarily decided to retain information on episodes
+that at least 5 anime fall under so that no one anime is driving our
+inference on episode count.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-34-1.png)
+After filtering for episodes that have at least 5 episodes under its
+belt, we get a range of episodes from 3 to 104 episodes.
 
-Upon testing different models with various combinations of log and
-polynomial transformations of `episodes`, we found the best model
-(evaluated on lowest Bayesian information criterion (BIC)) to be
+Thus, we start by averaging MAL score by episode. According to the trend
+that we observe, there doesn’t seem to be a strong negative or positive
+relationship between number of episodes and score. Though, what is
+interesting is where we observe a maximum average score.
 
-$$logit(\hat{P}(Y \le 1)) = -2.40 - 0.0004Episodes + 0.32log(Episodes) \\\\ logit(\hat{P}(Y \le 2)) = -1.44 - 0.0004Episodes + 0.32log(Episodes)$$
-\*Note: due to the parallel lines assumption, the intercepts are
-different for each category but the slopes are constant across
-categories.
+![](index_files/figure-markdown_strict/unnamed-chunk-35-1.png)
 
-This means that for each additional episode in an anime
+We observe that an episode count of 74-75 episodes yielded the highest
+MAL scores on average. After 74075 episodes, the average scores drop
+back down to below 7.5.
+
+Though this isn’t confirmatory that 74-75 is now the magic number, it
+would be useful to see how this range fairs in MAL datasets from other
+years as well.
 
 ### What can synopsis tell us about score?
 
-Including in the MyAnimeList database is a synopsis on the anime. Have
-you ever wondered, can the synoposis of an anime be a good indicator of
+Included in the MyAnimeList database is a synopsis on the anime. Have
+you ever wondered, can the synopsis of an anime be a good indicator of
 score? What kinds of words often appear in anime that score highly
-vs. those that score lowly? Using the same characterization of anime
-score highly, medium, and lowly, we collect the sypnopses from this
-group and concatenate them together.
+vs. those that score lowly?
+
+In order to characterize what it means for an anime to score lowly,
+averagely, or highly, we categorize score into ordered categories.
+Particularly, we’ll be categorizing score into three separate score
+categories: low, medium, high. Anime with scores less than 6 were put
+into the low category, those with scores greater than or equal to 8 were
+placed into the high category, and all other anime were placed into the
+medium category.
+
+After categorizing the score variable, we get that only 5.6% of anime
+fall into the high category on MAL, 18% of anime fall into the low
+category, and the remaining 76.4% of anime fall into the medium
+category.
+
+We collect the sypnopses from this anime belonging to each score group
+(low, medium, high) and concatenate/collapse them together.
 
 In order to get meaningful analyses, we will remove stop words from the
 [Snowball stop word
@@ -655,7 +662,7 @@ new, life, however, high, two, can, day, time, now, young.
 
 And so we’re left with the following information -
 
-![](index_files/figure-markdown_strict/unnamed-chunk-41-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-41-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-41-3.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-43-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-43-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-43-3.png)
 
 A few things of note, anime involving a `girl` or `girls` tend to be
 more popular as these words appear most frequently for medium and highly
@@ -669,3 +676,5 @@ Just a few of many observations to take away from this exercise.
 For next steps, we can look into adjusting for the number of words in
 each synopsis or even extending our synopsis analysis into sentiment
 analysis.
+
+## So what did we learn?
