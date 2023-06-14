@@ -1,7 +1,6 @@
-<p align="center">
+<p align = "center", style="font-size:160%;color:orange;">
 
-“*Anime is an important part of our culture!*” ~ Ryota Mitarai from
-Danganronpa 3: The End of Hope’s Peak High School
+<b><i>"Anime is an important part of our culture!"</i> \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School</b>
 
 </p>
 
@@ -228,8 +227,8 @@ few more columns to make the data in the raw dataset more digestible:
 
 <table>
 <colgroup>
-<col style="width: 26%" />
-<col style="width: 73%" />
+<col style="width: 27%" />
+<col style="width: 72%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -327,12 +326,7 @@ remaining 20% will be saved to test the accuracy of our model on.
 
 After going through stepwise selection, we yield the following model:
 
-*E\[Score\] = -14.4 + 0.0004Episodes + 0.16Rating<sub>PG-13</sub> +
-0.05Rating<sub>PG</sub>+ 0.22RatingR - 0.16Rating<sub>R+</sub> -
-0.21Rating<sub>Rx</sub> + 0.000001Members + 0.02Duration + 0.02Action +
-0.15Comedy + 0.31Drama + 0.26Historical + 0.06Magic + 0.04School +
-0.28Shounen + 0.23Slice of Life + 0.01Start Year + 0.03Num. Years
-Running*
+<img src="img/mod_equ.png" width="1498" style="display: block; margin: auto;" />
 
 where *E*\[*S**c**o**r**e*\] is the expected value of the score of each
 anime.
@@ -415,7 +409,7 @@ expect a 0.000001 increase in score, holding all other variables in the
 model constant. While this change seems small, it’s helpful to keep in
 mind the range of values in each anime’s group.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-18-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-19-1.png)
 
 In our train dataset, the number of members within each anime’s group
 ranges from 1 to 2,589,552 with a median value of 4,568 which is a
@@ -430,7 +424,7 @@ additional minute per episode, the score is expected to increase by
 0.02. Of course, the expectation of duration is different by type
 (e.g. TV, Movie, OVA).
 
-![](index_files/figure-markdown_strict/unnamed-chunk-21-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-22-1.png)
 
 Though, there’s no hard and fast rules for how long these mediums can
 be, we see from the scatterplot above that while anime for TV typically
@@ -509,7 +503,7 @@ of 2.64 can be a gross overestimation of an anime’s score. This maximum
 value seems to be an outlier though as the majority of prediction errors
 hover around 0.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-27-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-28-1.png)
 
 And so the mean absolute error is 0.5. So, on average, we can expect a
 0.5 (or 1/2 a point) prediction error from this model. With that being
@@ -541,7 +535,7 @@ Score<sub>MAL</sub> - Score<sub>Completed</sub>
 If the scores are not significantly different, we may expect that this
 vector of differences follow a normal distribution centered around 0.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-30-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-31-1.png)
 
 The distribution of differences between scores (MAL Score - Completed
 Users Score) is centered around a mean of 0.02 with a standard deviation
@@ -556,7 +550,7 @@ T-test**. The paired-sample t-test can be used to determine whether the
 mean difference between pairs of measurements is 0 or not. Thus, the
 following hypotheses are tested:
 
-<img src="img/score_t_test.png" width="400px" style="display: block; margin: auto;" />
+<img src="img/score_t_test.png" width="300px" style="display: block; margin: auto;" />
 
 We display the results of the t-test below:
 
@@ -618,7 +612,7 @@ that we observe, there doesn’t seem to be a strong negative or positive
 relationship between number of episodes and score. Though, what is
 interesting is where we observe a maximum average score.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-35-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-36-1.png)
 
 We observe that an episode count of 74-75 episodes yielded the highest
 MAL scores on average. After 74075 episodes, the average scores drop
@@ -666,7 +660,7 @@ new, life, however, high, two, can, day, time, now, young.
 
 And so we’re left with the following information -
 
-![](index_files/figure-markdown_strict/unnamed-chunk-43-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-43-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-43-3.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-44-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-44-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-44-3.png)
 
 A few things of note, anime involving a `girl` or `girls` tend to be
 more popular as these words appear most frequently for medium and highly

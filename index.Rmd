@@ -34,12 +34,13 @@ library(ggforce)
 
 ```
 
-<p align = "center">
+```{=html}
+<p align = "center", style="font-size:160%;color:orange;">
 
-"*Anime is an important part of our culture!*" \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School
+<b><i>"Anime is an important part of our culture!"</i> \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School</b>
 
 </p>
-
+```
 ![](./img/spy-family.gif)
 
 Indeed it is, Ryota. Indeed it is.
@@ -100,7 +101,7 @@ The `rating_complete` data only considers anime that users have marked as 'compl
 Thus, we have two more columns of interest in our dataset.
 
 | Column          | Description                                                                                                                             |
-|------------------------|------------------------------------------------|
+|------------------------|-----------------------------------------------|
 | Synopsis        | string with the synopsis of the anime                                                                                                   |
 | Score_completed | average score of the anime given from users that have marked the anime as 'completed' in the MyAnimelist database. Score out of 10 pts. |
 
@@ -237,7 +238,7 @@ anime_full_df <- anime_full_df %>%
 I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. Additionally, the `genres`, `aired`, and `studios` variables were reformatted for the purpose of analysis. \*Note: For genre, we retained information about genres that had a frequency of at least 2% of all the genres listed in the dataset. This reformatting led to the addition of a few more columns to make the data in the raw dataset more digestible:
 
 | Column                             | Description                                                                                                                                                                           |
-|-------------------|-----------------------------------------------------|
+|--------------------|----------------------------------------------------|
 | Multiple Indicator Genre Variables | indicator (0/1) variables for genres Action, Adventure, Comedy, Drama, Fantasy, Hentai, Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice of Life, Supernatural |
 | Start Year                         | the year the anime started airing                                                                                                                                                     |
 | End Year                           | the year the anime ended airing - this value is NA is the anime is currently airing                                                                                                   |
@@ -340,7 +341,12 @@ In order to validate the generalizability, we will perform stepwise selection on
 
 After going through stepwise selection, we yield the following model:
 
-*E[Score] = -14.4 + 0.0004Episodes + 0.16Rating~PG-13~ + 0.05Rating~PG~+ 0.22RatingR - 0.16Rating~R+~ - 0.21Rating~Rx~ + 0.000001Members + 0.02Duration + 0.02Action + 0.15Comedy + 0.31Drama + 0.26Historical + 0.06Magic + 0.04School + 0.28Shounen + 0.23Slice of Life + 0.01Start Year + 0.03Num. Years Running*
+```{r, fig.align='center'}
+
+knitr::include_graphics("img/mod_equ.png")
+
+
+```
 
 where $E[Score]$ is the expected value of the score of each anime.
 
@@ -645,7 +651,7 @@ The distribution of differences between scores (MAL Score - Completed Users Scor
 
 It's difficult to just eyeball this distribution and decide whether or not the difference between these scores is significantly different or not. One way to formally test this is by using a **paired-sample T-test**. The paired-sample t-test can be used to determine whether the mean difference between pairs of measurements is 0 or not. Thus, the following hypotheses are tested:
 
-```{r, fig.align='center', out.width='400px'}
+```{r, fig.align='center', out.width='300px'}
 
 knitr::include_graphics("img/score_t_test.png")
 
@@ -711,7 +717,7 @@ ggplot(data = epis_df, aes(x = episodes, y = avg_score)) + geom_point() +
   theme(plot.title=element_text(size=15)) +
   geom_point(data=epis_df %>% filter(avg_score == max(epis_df$avg_score)),
              pch=21,
-             size=7,
+             size=8,
              colour="purple")
 
 ```
