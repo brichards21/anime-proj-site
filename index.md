@@ -1,4 +1,4 @@
-<p align = "center", style="font-size:160%;">
+<p align = "center">
 
 <b><i>"Anime is an important part of our culture!"</i> \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School</b>
 
