@@ -68,8 +68,8 @@ We retained the following information from the `anime` dataset:
 
 <table>
 <colgroup>
-<col style="width: 34%" />
-<col style="width: 65%" />
+<col style="width: 35%" />
+<col style="width: 64%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -189,8 +189,8 @@ Thus, we have two more columns of interest in our dataset.
 
 <table>
 <colgroup>
-<col style="width: 30%" />
-<col style="width: 69%" />
+<col style="width: 31%" />
+<col style="width: 68%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -224,8 +224,8 @@ few more columns to make the data in the raw dataset more digestible:
 
 <table>
 <colgroup>
-<col style="width: 16%" />
-<col style="width: 83%" />
+<col style="width: 22%" />
+<col style="width: 77%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -496,11 +496,6 @@ error, which is measured as such:
 
 <img src="img/mae.png" width="390" style="display: block; margin: auto;" />
 
-    ##      RMSE        R2 
-    ## 0.5957100 0.3634162
-
-    ## [1] 0.4951631
-
 We use our model to predict on our test data and collect prediction
 error on each observation. The plot below shows that the distribution of
 prediction errors seems to roughly normally distributed with a maximum
@@ -511,6 +506,12 @@ value seems to be an outlier though as the majority of prediction errors
 hover around 0.
 
 ![](index_files/figure-markdown_strict/unnamed-chunk-27-1.png)
+
+And so the mean absolute error is 0.5. So, on average, we can expect a
+0.5 (or 1/2 a point) prediction error from this model. With that being
+said, it may be reasonable to conclude that our model generally performs
+well on our test data and we may have some comfort in the validity of
+the inferential conclusions drawn by our model!
 
 ### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as ‘completed’?
 
@@ -534,8 +535,42 @@ indicated that they have completed the respective anime:
 Score<sub>MAL</sub> - Score<sub>Completed</sub>
 
 If the scores are not significantly different, we may expect that this
-vector of differences follow a standard normal distribution with mean 0
-and standard deviation 1 (i.e. N ~ (0, 1)).
+vector of differences follow a normal distribution centered around 0.
+
+![](index_files/figure-markdown_strict/unnamed-chunk-30-1.png)
+
+    ## [1] 0.02153778
+
+    ## [1] 0.2266719
+
+The distribution of differences between scores (MAL Score - Completed
+Users Score) is centered around a mean of 0.02 with a standard deviation
+of 0.23. A mean of 0.02 which is positive, mean that MAL scores
+generally tend to be slightly higher than scores given by users who have
+marked those anime as completed.
+
+It’s difficult to just eyeball this distribution and decide whether or
+not the difference between these scores is significantly different or
+not. One way to formally test this is by using a **paired-sample
+T-test**. The paired-sample t-test can be used to determine whether the
+mean difference between pairs of measurements is 0 or not. Thus, the
+following hypotheses are tested:
+
+$$H\_0: \mu\_{score\\: MAL} = \mu\_{score\\: completed} \\\\ H\_A: \mu\_{score\\:MAL} \ne \mu\_{score\\:completed}$$
+
+<img src="img/score_t_test.png" width="603" style="display: block; margin: auto;" />
+
+    ## 
+    ##  Paired t-test
+    ## 
+    ## data:  anime_full_df$score and anime_full_df$score_comp
+    ## t = 7.8543, df = 6832, p-value = 4.637e-15
+    ## alternative hypothesis: true mean difference is not equal to 0
+    ## 95 percent confidence interval:
+    ##  0.01616230 0.02691326
+    ## sample estimates:
+    ## mean difference 
+    ##      0.02153778
 
 ### How long is too long?
 
