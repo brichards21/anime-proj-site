@@ -556,9 +556,9 @@ T-test**. The paired-sample t-test can be used to determine whether the
 mean difference between pairs of measurements is 0 or not. Thus, the
 following hypotheses are tested:
 
-$$H\_0: \mu\_{score\\: MAL} = \mu\_{score\\: completed} \\\\ H\_A: \mu\_{score\\:MAL} \ne \mu\_{score\\:completed}$$
+<img src="img/score_t_test.png" width="70%" style="display: block; margin: auto;" />
 
-<img src="img/score_t_test.png" width="603" style="display: block; margin: auto;" />
+We display the results of the t-test below:
 
     ## 
     ##  Paired t-test
@@ -572,7 +572,20 @@ $$H\_0: \mu\_{score\\: MAL} = \mu\_{score\\: completed} \\\\ H\_A: \mu\_{score\\
     ## mean difference 
     ##      0.02153778
 
+The test yielded a p-value of 4.64 \* 10-15 which gives us significant
+evidence to reject the null hypothesis. Thus, we may conclude that the
+mean difference between the sets of scores is not statistically zero. In
+particular, it’s possible that generally users are preemptively scoring
+these anime when they otherwise may have had a worse opinion of the
+content had they completed the anime. Though, this is just a theory as
+to why we may be seeing a difference between the scores. We would have
+to do more extensive research like conducting an experiment or
+navigating a causal conclusion in order to explain why this phenomenon
+is observed in the data.
+
 ### How long is too long?
+
+![](./img/rampo.gif)
 
 We’ve all heard the age-old qualm with some anime these days. Though
 fans alike love it when our favorite storylines and characters keep
@@ -583,3 +596,76 @@ it several episodes or even seasons ago.
 
 So, how long is too long? Is there an optimal range of episodes that an
 anime should be in order to leave the audience satisfied?
+
+There are a lot of ways to try and answer this question, but I’m going
+to do it my means of ordinal logistic regression. Recall that score is a
+numeric value. In order to conduct ordinal logistic regression, we need
+to categorize score in ordered categories. Ordinal logistic regression
+is used to model the relationship between an ordinal response variable
+and one or more explanatory variables. Particularly, we’ll be
+categorizing score into three separate score categories: low, medium,
+high. We will categorize anime with scores less than 6 in the low
+category, greater than or equal to 8 in the high category, and all other
+anime into the medium category. We will use episode count and various
+transformations of episode count as the predictor variable(s) of
+interest. Additionally, we will only consider anime made for TV
+consumption to keep the anime relatively within the same playing field
+in terms of episodic behavior instead of also including irregular
+mediums like movies, speicals, and OVAs.
+
+After categorizing the score variable, we get that only 11.1% of anime
+fall into the low category on MAL, 8.5% of anime fall into the high
+category, and the remaining 80.5% of anime fall into the medium
+category.
+
+![](index_files/figure-markdown_strict/unnamed-chunk-34-1.png)
+
+Upon testing different models with various combinations of log and
+polynomial transformations of `episodes`, we found the best model
+(evaluated on lowest Bayesian information criterion (BIC)) to be
+
+$$logit(\hat{P}(Y \le 1)) = -2.40 - 0.0004Episodes + 0.32log(Episodes) \\\\ logit(\hat{P}(Y \le 2)) = -1.44 - 0.0004Episodes + 0.32log(Episodes)$$
+\*Note: due to the parallel lines assumption, the intercepts are
+different for each category but the slopes are constant across
+categories.
+
+This means that for each additional episode in an anime
+
+### What can synopsis tell us about score?
+
+Including in the MyAnimeList database is a synopsis on the anime. Have
+you ever wondered, can the synoposis of an anime be a good indicator of
+score? What kinds of words often appear in anime that score highly
+vs. those that score lowly? Using the same characterization of anime
+score highly, medium, and lowly, we collect the sypnopses from this
+group and concatenate them together.
+
+In order to get meaningful analyses, we will remove stop words from the
+[Snowball stop word
+list](http://snowball.tartarus.org/algorithms/english/stop.txt). We’ll
+also add the words ‘source’ and ‘ann’ to the stop words list because
+they aren’t of contextual significance and often appear in MAL synopses.
+We check the frequency of the words that appear within synopses of lowly
+scored, medium scored, to highly scored anime on MAL. We retain
+information on the top 20 most frequent words that appear in each
+categorization of score. In order to scope out the most meaningful
+words, we will remove words that appear in all three of the 20 list for
+anime rated low, medium, and high. These words were one, world, school,
+new, life, however, high, two, can, day, time, now, young.
+
+And so we’re left with the following information -
+
+![](index_files/figure-markdown_strict/unnamed-chunk-41-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-41-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-41-3.png)
+
+A few things of note, anime involving a `girl` or `girls` tend to be
+more popular as these words appear most frequently for medium and highly
+scored anime synopses but not in lowly scored anime. Anime involving
+`friends` can be found in both highly scored anime and lowly scored
+anime so it seems the power of friendship is not too polarizing one way
+or the other. The same thing goes for the words `year` and `become`.
+Interestingly, `must`, and `old` standout within anime lowly scored.
+Just a few of many observations to take away from this exercise.
+
+For next steps, we can look into adjusting for the number of words in
+each synopsis or even extending our synopsis analysis into sentiment
+analysis.
