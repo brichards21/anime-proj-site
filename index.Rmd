@@ -34,7 +34,11 @@ library(ggforce)
 
 ```
 
+<p align = "center">
+
 "*Anime is an important part of our culture!*" \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School
+
+</p>
 
 ![](./img/spy-family.gif)
 
@@ -65,7 +69,7 @@ The `anime` dataset, which is the main dataset of interest detailed the core inf
 We retained the following information from the `anime` dataset:
 
 | Column        | Description                                                                                       |
-|-------------------------|----------------------------------------------|
+|--------------------------|----------------------------------------------|
 | MAL_ID        | MyAnimelist ID of the anime. Unique for each anime.                                               |
 | Name          | full name of the anime                                                                            |
 | Score         | average score of the anime given from all users in the MyAnimelist database. Score out of 10 pts. |
@@ -96,7 +100,7 @@ The `rating_complete` data only considers anime that users have marked as 'compl
 Thus, we have two more columns of interest in our dataset.
 
 | Column          | Description                                                                                                                             |
-|-----------------------|-------------------------------------------------|
+|------------------------|------------------------------------------------|
 | Synopsis        | string with the synopsis of the anime                                                                                                   |
 | Score_completed | average score of the anime given from users that have marked the anime as 'completed' in the MyAnimelist database. Score out of 10 pts. |
 
@@ -232,8 +236,8 @@ anime_full_df <- anime_full_df %>%
 
 I first chose to reduce our analysis to only include anime with more than one episodes, so no movies, one-shots, or distinctive OVAs. We wanted to get information about anime series with continuous behavior, even if it was just a two-episode stint. This reduced our pool to 9,181 anime. Additionally, the `genres`, `aired`, and `studios` variables were reformatted for the purpose of analysis. \*Note: For genre, we retained information about genres that had a frequency of at least 2% of all the genres listed in the dataset. This reformatting led to the addition of a few more columns to make the data in the raw dataset more digestible:
 
-| Col1                               | Col2                                                                                                                                                                                  |
-|----------------|--------------------------------------------------------|
+| Column                             | Description                                                                                                                                                                           |
+|-------------------|-----------------------------------------------------|
 | Multiple Indicator Genre Variables | indicator (0/1) variables for genres Action, Adventure, Comedy, Drama, Fantasy, Hentai, Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice of Life, Supernatural |
 | Start Year                         | the year the anime started airing                                                                                                                                                     |
 | End Year                           | the year the anime ended airing - this value is NA is the anime is currently airing                                                                                                   |
@@ -641,17 +645,14 @@ The distribution of differences between scores (MAL Score - Completed Users Scor
 
 It's difficult to just eyeball this distribution and decide whether or not the difference between these scores is significantly different or not. One way to formally test this is by using a **paired-sample T-test**. The paired-sample t-test can be used to determine whether the mean difference between pairs of measurements is 0 or not. Thus, the following hypotheses are tested:
 
-
-
-```{r, fig.align='center', out.width='100px'}
+```{r, fig.align='center', out.width='400px'}
 
 knitr::include_graphics("img/score_t_test.png")
 
 
 ```
 
-
-We display the results of the t-test below: 
+We display the results of the t-test below:
 
 ```{r}
 
@@ -660,8 +661,7 @@ t.test(anime_full_df$score, anime_full_df$score_comp, paired = T)
 
 ```
 
-The test yielded a p-value of 4.64 * 10-15 which gives us significant evidence to reject the null hypothesis. Thus, we may conclude that the mean difference between the sets of scores is not statistically zero. In particular, it's possible that generally users are preemptively scoring these anime when they otherwise may have had a worse opinion of the content had they completed the anime. Though, this is just a theory as to why we may be seeing a difference  between the scores. We would have to do more extensive research like conducting an experiment or navigating a causal conclusion in order to explain why this phenomenon is observed in the data. 
-
+The test yielded a p-value of 4.64 \* 10^-15^ which gives us significant evidence to reject the null hypothesis. Thus, we may conclude that the mean difference between the sets of scores is not statistically zero. In particular, it's possible that generally users are preemptively scoring these anime when they otherwise may have had a worse opinion of the content had they completed the anime. Though, this is just a theory as to why we may be seeing a difference between the scores. We would have to do more extensive research like conducting an experiment or navigating a causal conclusion in order to explain why this phenomenon is observed in the data.
 
 ### How long is too long?
 
@@ -671,7 +671,7 @@ We've all heard the age-old qualm with some anime these days. Though fans alike 
 
 So, how long is too long? Is there an optimal range of episodes that an anime should be in order to leave the audience satisfied?
 
-There are a lot of ways to try and answer this question, but I'm going to do it by means of regressing number of episodes on anime score. Recall that score and episodes are both numeric values. Additionally, we will only consider anime made for TV consumption to keep the anime relatively within the same playing field in terms of episodic behavior instead of also including irregular mediums like movies, specials, and OVAs. 
+There are a lot of ways to try and answer this question, but I'm going to do it by means of regressing number of episodes on anime score. Recall that score and episodes are both numeric values. Additionally, we will only consider anime made for TV consumption to keep the anime relatively within the same playing field in terms of episodic behavior instead of also including irregular mediums like movies, specials, and OVAs.
 
 First, we chose to synthesize the number of anime that fall under each episode count. We arbitrarily decided to retain information on episodes that at least 5 anime fall under so that no one anime is driving our inference on episode count.
 
@@ -684,7 +684,6 @@ epis_df <- anime_full_df %>%
   dplyr::select(mal_id, episodes, score)
 
 ```
-
 
 Thus, we start by averaging MAL score by episode. According to the trend that we observe, there doesn't seem to be a strong negative or positive relationship between number of episodes and score. Though, what is interesting is where we observe a maximum average score.
 
@@ -702,7 +701,6 @@ epis_df <- epis_df %>%
 
 ```
 
-
 ```{r}
 
 ggplot(data = epis_df, aes(x = episodes, y = avg_score)) + geom_point() +
@@ -713,32 +711,26 @@ ggplot(data = epis_df, aes(x = episodes, y = avg_score)) + geom_point() +
   theme(plot.title=element_text(size=15)) +
   geom_point(data=epis_df %>% filter(avg_score == max(epis_df$avg_score)),
              pch=21,
-             size=6,
+             size=7,
              colour="purple")
 
 ```
-
-
 
 We observe that an episode count of 74-75 episodes yielded the highest MAL scores on average. After 74075 episodes, the average scores drop back down to below 7.5.
 
 Though this isn't confirmatory that 74-75 is now the magic number, it would be useful to see how this range fairs in MAL datasets from other years as well.
 
-
-
-### What can synopsis tell us about score? 
+### What can synopsis tell us about score?
 
 Included in the MyAnimeList database is a synopsis on the anime. Have you ever wondered, can the synopsis of an anime be a good indicator of score? What kinds of words often appear in anime that score highly vs. those that score lowly?
 
-In order to characterize what it means for an anime to score lowly, averagely, or highly, we categorize score into ordered categories. Particularly, we'll be categorizing score into three separate score categories: low, medium, high. Anime with scores less than 6 were put into the low category, those with scores greater than or equal to 8 were placed into the high category, and all other anime were placed into the medium category. 
-
+In order to characterize what it means for an anime to score lowly, averagely, or highly, we categorize score into ordered categories. Particularly, we'll be categorizing score into three separate score categories: low, medium, high. Anime with scores less than 6 were put into the low category, those with scores greater than or equal to 8 were placed into the high category, and all other anime were placed into the medium category.
 
 After categorizing the score variable, we get that only 5.6% of anime fall into the high category on MAL, 18% of anime fall into the low category, and the remaining 76.4% of anime fall into the medium category.
 
 We collect the sypnopses from this anime belonging to each score group (low, medium, high) and concatenate/collapse them together.
 
 In order to get meaningful analyses, we will remove stop words from the [Snowball stop word list](http://snowball.tartarus.org/algorithms/english/stop.txt). We'll also add the words 'source' and 'ann' to the stop words list because they aren't of contextual significance and often appear in MAL synopses. We check the frequency of the words that appear within synopses of lowly scored, medium scored, to highly scored anime on MAL. We retain information on the top 20 most frequent words that appear in each categorization of score. In order to scope out the most meaningful words, we will remove words that appear in all three of the 20 list for anime rated low, medium, and high. These words were one, world, school, new, life, however, high, two, can, day, time, now, young.
-
 
 ```{r}
 
@@ -761,7 +753,6 @@ med_synop <- paste(anime_full_df[anime_full_df$score_cat == "medium", ]$sypnopsi
 high_synop <- paste(anime_full_df[anime_full_df$score_cat == "high", ]$sypnopsis, collapse = "")
 
 ```
-
 
 ```{r}
 
@@ -791,7 +782,6 @@ med_synop_df <- med_synop_df %>%
 
 ```
 
-
 ```{r}
 
 high_synop_df <- tibble(line = 1:4, text = high_synop)
@@ -806,14 +796,12 @@ high_synop_df <- high_synop_df %>%
 
 ```
 
-
 ```{r}
 
 
 common_words <- intersect(intersect(high_synop_df$word, med_synop_df$word), low_synop_df$word)
 
 ```
-
 
 ```{r}
 
@@ -870,12 +858,8 @@ ggplot(aes(word, n, fill = word)) + geom_col() +
 
 ```
 
-
 A few things of note, anime involving a `girl` or `girls` tend to be more popular as these words appear most frequently for medium and highly scored anime synopses but not in lowly scored anime. Anime involving `friends` can be found in both highly scored anime and lowly scored anime so it seems the power of friendship is not too polarizing one way or the other. The same thing goes for the words `year` and `become`. Interestingly, `must`, and `old` standout within anime lowly scored. Just a few of many observations to take away from this exercise.
-
 
 For next steps, we can look into adjusting for the number of words in each synopsis or even extending our synopsis analysis into sentiment analysis.
 
 ## So what did we learn?
-
-

@@ -1,5 +1,9 @@
+<p align="center">
+
 “*Anime is an important part of our culture!*” ~ Ryota Mitarai from
 Danganronpa 3: The End of Hope’s Peak High School
+
+</p>
 
 ![](./img/spy-family.gif)
 
@@ -68,8 +72,8 @@ We retained the following information from the `anime` dataset:
 
 <table>
 <colgroup>
-<col style="width: 35%" />
-<col style="width: 64%" />
+<col style="width: 36%" />
+<col style="width: 63%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -189,8 +193,8 @@ Thus, we have two more columns of interest in our dataset.
 
 <table>
 <colgroup>
-<col style="width: 31%" />
-<col style="width: 68%" />
+<col style="width: 33%" />
+<col style="width: 66%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -224,13 +228,13 @@ few more columns to make the data in the raw dataset more digestible:
 
 <table>
 <colgroup>
-<col style="width: 22%" />
-<col style="width: 77%" />
+<col style="width: 26%" />
+<col style="width: 73%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th>Col1</th>
-<th>Col2</th>
+<th>Column</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
@@ -552,7 +556,7 @@ T-test**. The paired-sample t-test can be used to determine whether the
 mean difference between pairs of measurements is 0 or not. Thus, the
 following hypotheses are tested:
 
-<img src="img/score_t_test.png" width="100px" style="display: block; margin: auto;" />
+<img src="img/score_t_test.png" width="400px" style="display: block; margin: auto;" />
 
 We display the results of the t-test below:
 
@@ -568,16 +572,16 @@ We display the results of the t-test below:
     ## mean difference 
     ##      0.02153778
 
-The test yielded a p-value of 4.64 \* 10-15 which gives us significant
-evidence to reject the null hypothesis. Thus, we may conclude that the
-mean difference between the sets of scores is not statistically zero. In
-particular, it’s possible that generally users are preemptively scoring
-these anime when they otherwise may have had a worse opinion of the
-content had they completed the anime. Though, this is just a theory as
-to why we may be seeing a difference between the scores. We would have
-to do more extensive research like conducting an experiment or
-navigating a causal conclusion in order to explain why this phenomenon
-is observed in the data.
+The test yielded a p-value of 4.64 \* 10<sup>-15</sup> which gives us
+significant evidence to reject the null hypothesis. Thus, we may
+conclude that the mean difference between the sets of scores is not
+statistically zero. In particular, it’s possible that generally users
+are preemptively scoring these anime when they otherwise may have had a
+worse opinion of the content had they completed the anime. Though, this
+is just a theory as to why we may be seeing a difference between the
+scores. We would have to do more extensive research like conducting an
+experiment or navigating a causal conclusion in order to explain why
+this phenomenon is observed in the data.
 
 ### How long is too long?
 
