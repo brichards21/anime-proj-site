@@ -1,11 +1,11 @@
 ---
-output: md_document
+output: pdf_document
 author: "Breanna Richards"
 always_allow_html: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, error=FALSE, echo = FALSE)
 library(tidyverse)
 library(lubridate)
 library(readr)
@@ -35,7 +35,7 @@ library(ggforce)
 ```
 
 
-![](./img/spy-family.gif)
+
 
 
 ```{=html}
@@ -410,7 +410,6 @@ In regard to content ratings, we list the rating labels in order of highest to l
 
 Notably, there doesn't seem to be a linear relationship between rating and score. While generally audiences tend to like content that are on the maturer side (rated PG-13 and R - 17+), there's a limit to exactly *how* spicy audiences like their content to be cooked up for them. Particularly, as we see an upward trend in score from ratings G, PG, PG-13, and R- 17+, the next too more intense levels of content, R+ for mild nudity, and Rx for full blown Hentai are in fact scored the lowest on the list. Meaning, we mature themes seem to be a hit among the MAL community, but explicit content... not so much.
 
-![](./img/watch_tv.gif)
 
 As expected, number of members in that anime's MAL group is positively associated with that anime's score. For every one additional member, we expect a 0.000001 increase in score, holding all other variables in the model constant. While this change seems small, it's helpful to keep in mind the range of values in each anime's group.
 
@@ -675,7 +674,7 @@ The test yielded a p-value of 4.64 \* 10^-15^ which gives us significant evidenc
 
 ### How long is too long?
 
-![](./img/rampo.gif)
+
 
 We've all heard the age-old qualm with some anime these days. Though fans alike love it when our favorite story lines and characters keep shoveling quality content into our trying lives, when is enough enough? Die hard fans can all name at least one show where they felt the story was dragged on and on when really, it would've just been optimal to end it several episodes or even seasons ago.
 
@@ -870,20 +869,16 @@ ggplot(aes(word, n, fill = word)) + geom_col() +
 
 A few things of note, anime involving a `girl` or `girls` tend to be more popular as these words appear most frequently for medium and highly scored anime synopses but not in lowly scored anime. Anime involving `friends` can be found in both highly scored anime and lowly scored anime so it seems the power of friendship is not too polarizing one way or the other. The same thing goes for the words `year` and `become`. Interestingly, `must`, and `old` standout within anime lowly scored. Just a few of many observations to take away from this exercise.
 
-![](./img/sailor_moon.gif)
-
 For next steps, we can look into adjusting for the number of words in each synopsis or even extending our synopsis analysis into sentiment analysis.
 
-## What did we learn?
+## So what did we learn?
 
-This blog post discussed the significance of anime in global popular culture and introduced MyAnimeList.net as a platform for anime enthusiasts. The post then presented the findings of a research study conducted using the platform's 2020 dataset to answer several key questions.
 
-Alright, so the study set out to crack the code on what makes an anime super popular. And guess what? The number of episodes actually matters! Yeah, the longer the series, the higher the rating. It's like the anime world is telling us, "Give me more!" But hey, it's not just the length that counts. The type of content makes a difference too. Mature themes? Yeah, they're cool. But explicit stuff? Not so much. Gotta keep it classy. 
 
-Now let's talk genres. Drama, historical, shounen, and slice-of-life? They're the kings! They get all the love and high scores. But action, well, it's a bit overcrowded. It's like trying to find a diamond in a pile of rocks. Some shine, but others... not so much. Here's an interesting tidbit: people can be quick to judge. The study found that some users rate anime before even finishing them. It's like saying, "I've seen enough, time to rate!" But hey, completionists, don't fret. Your scores are a tad more critical than the impatient ones.
 
-Now, you'd think there's an ideal number of episodes for an anime to be a hit. Well, not necessarily. The study checked out TV anime and surprise, surprise—there's no magic number. Each series does its own thing, with different episode counts and corresponding scores. 
+# Code Appendix
 
-So, there you have it—some preliminary insights into what makes anime popular. We've unveiled the secrets of episode length, content, genres, fanbase size, and even impatient raters. Now go forth, my fellow otakus, armed with this quirky knowledge, and let the anime marathon continue!
+```{r ref.label=knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
 
-![](./img/chika.gif)
+

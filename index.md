@@ -2,7 +2,7 @@
 
 <p align = "center">
 
-<b><i>"Anime is an important part of our culture!"</i> \~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School</b>
+<b><i>"Anime is an important part of our culture!"</i> ~ Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School</b>
 
 </p>
 
@@ -298,10 +298,10 @@ the dependent variable of interest (score), we omit `ranked`,
 Notably, number of members, favorites, watching, completed, on-hold,
 dropped, and plan to watch are moderately to highly correlated. In order
 to correct for this, we will retain number of community members in each
-anime’s group as the representation of membership to the anime’s fanbase
-in our dataset. Additionally, start year is highly correlated with end
-year so we’ll just retain information on start year and instead create a
-variable representing number of years running.
+anime’s group as the representation of membership to the anime’s fan
+base in our dataset. Additionally, start year is highly correlated with
+end year so we’ll just retain information on start year and instead
+create a variable representing number of years running.
 
 ![](index_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
@@ -463,11 +463,11 @@ reported genre in 2020. So while it’s a standout among the hits, in the
 grand scheme of things, while there are amazing action anime that are
 being ranked and perceived well, there are also action anime out there
 that are performing less favorably among crowds. In fact, it seems that
-the action genre may even be oversaturated with the good, the bad, and
+the action genre may even be over-saturated with the good, the bad, and
 the ugly. In other words, purely slapping the genre of action on your
 anime doesn’t make it an automatic hit. Yes, it’s true. Audiences won’t
 just froth at the mouth at characters going toe-to-toe in combat without
-it having that special ‘umph’ to it that really makes it a generational
+it having that special ‘oomph’ to it that really makes it a generational
 favorite.
 
 **This just in, newer anime are in!** According to our model, with each
@@ -482,8 +482,8 @@ Additionally, we can take into account how many years an anime has been
 running. Evidently, anime that have been on-going for longer have
 significantly higher scores than those that have not. Perhaps being in
 the good graces of key audiences is what have allowed them to persist
-for so long. According to our model, with each additional year of
-runtime, the score value is expected to increase by 0.03.
+for so long. According to our model, with each additional year of run
+time, the score value is expected to increase by 0.03.
 
 Now that we’ve summarized what our model is trying to tell us about the
 anime in our training set, we can apply our model to our withheld test
@@ -582,7 +582,7 @@ this phenomenon is observed in the data.
 ![](./img/rampo.gif)
 
 We’ve all heard the age-old qualm with some anime these days. Though
-fans alike love it when our favorite storylines and characters keep
+fans alike love it when our favorite story lines and characters keep
 shoveling quality content into our trying lives, when is enough enough?
 Die hard fans can all name at least one show where they felt the story
 was dragged on and on when really, it would’ve just been optimal to end
@@ -615,7 +615,7 @@ interesting is where we observe a maximum average score.
 ![](index_files/figure-markdown_strict/unnamed-chunk-36-1.png)
 
 We observe that an episode count of 74-75 episodes yielded the highest
-MAL scores on average. After 74075 episodes, the average scores drop
+MAL scores on average. After 74-75 episodes, the average scores drop
 back down to below 7.5.
 
 Though this isn’t confirmatory that 74-75 is now the magic number, it
@@ -642,7 +642,7 @@ fall into the high category on MAL, 18% of anime fall into the low
 category, and the remaining 76.4% of anime fall into the medium
 category.
 
-We collect the sypnopses from this anime belonging to each score group
+We collect the synopses from this anime belonging to each score group
 (low, medium, high) and concatenate/collapse them together.
 
 In order to get meaningful analyses, we will remove stop words from the
@@ -671,8 +671,45 @@ or the other. The same thing goes for the words `year` and `become`.
 Interestingly, `must`, and `old` standout within anime lowly scored.
 Just a few of many observations to take away from this exercise.
 
+![](./img/sailor_moon.gif)
+
 For next steps, we can look into adjusting for the number of words in
 each synopsis or even extending our synopsis analysis into sentiment
 analysis.
 
-## So what did we learn?
+## What did we learn?
+
+This blog post discussed the significance of anime in global popular
+culture and introduced MyAnimeList.net as a platform for anime
+enthusiasts. The post then presented the findings of a research study
+conducted using the platform’s 2020 dataset to answer several key
+questions.
+
+Alright, so the study set out to crack the code on what makes an anime
+super popular. And guess what? The number of episodes actually matters!
+Yeah, the longer the series, the higher the rating. It’s like the anime
+world is telling us, “Give me more!” But hey, it’s not just the length
+that counts. The type of content makes a difference too. Mature themes?
+Yeah, they’re cool. But explicit stuff? Not so much. Gotta keep it
+classy.
+
+Now let’s talk genres. Drama, historical, shounen, and slice-of-life?
+They’re the kings! They get all the love and high scores. But action,
+well, it’s a bit overcrowded. It’s like trying to find a diamond in a
+pile of rocks. Some shine, but others… not so much. Here’s an
+interesting tidbit: people can be quick to judge. The study found that
+some users rate anime before even finishing them. It’s like saying,
+“I’ve seen enough, time to rate!” But hey, completionists, don’t fret.
+Your scores are a tad more critical than the impatient ones.
+
+Now, you’d think there’s an ideal number of episodes for an anime to be
+a hit. Well, not necessarily. The study checked out TV anime and
+surprise, surprise—there’s no magic number. Each series does its own
+thing, with different episode counts and corresponding scores.
+
+So, there you have it—some preliminary insights into what makes anime
+popular. We’ve unveiled the secrets of episode length, content, genres,
+fanbase size, and even impatient raters. Now go forth, my fellow otakus,
+armed with this quirky knowledge, and let the anime marathon continue!
+
+![](./img/chika.gif)

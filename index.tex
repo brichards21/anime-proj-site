@@ -91,9 +91,6 @@
 
 \begin{document}
 
-``\emph{Anime is an important part of our culture!}'' \textasciitilde{}
-Ryota Mitarai from Danganronpa 3: The End of Hope's Peak High School
-
 \includegraphics{./img/spy-family.gif}
 
 Indeed it is, Ryota. Indeed it is.
@@ -163,8 +160,8 @@ detailed the core information of each anime listed.
 We retained the following information from the \texttt{anime} dataset:
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6667}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3611}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6389}}@{}}
 \toprule()
 \begin{minipage}[b]{\linewidth}\raggedright
 Column
@@ -226,8 +223,8 @@ according to users that have marked the anime as completed.
 Thus, we have two more columns of interest in our dataset.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2778}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7222}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.3380}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.6620}}@{}}
 \toprule()
 \begin{minipage}[b]{\linewidth}\raggedright
 Column
@@ -250,7 +247,34 @@ even if it was just a two-episode stint. This reduced our pool to 9,181
 anime. Additionally, the \texttt{genres}, \texttt{aired}, and
 \texttt{studios} variables were reformatted for the purpose of analysis.
 *Note: For genre, we retained information about genres that had a
-frequency of at least 2\% of all the genres listed in the dataset.
+frequency of at least 2\% of all the genres listed in the dataset. This
+reformatting led to the addition of a few more columns to make the data
+in the raw dataset more digestible:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.2778}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.7222}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Column
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Description
+\end{minipage} \\
+\midrule()
+\endhead
+Multiple Indicator Genre Variables & indicator (0/1) variables for
+genres Action, Adventure, Comedy, Drama, Fantasy, Hentai, Historical,
+Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice of Life,
+Supernatural \\
+Start Year & the year the anime started airing \\
+End Year & the year the anime ended airing - this value is NA is the
+anime is currently airing \\
+Primary Studio & the first studio listed in the `studios' variable \\
+Secondary Studio & the second studio listed in the `studios' variable \\
+Number of Studios & the number of studios working/that worked on the
+anime \\
+\bottomrule()
+\end{longtable}
 
 All data cleaning was conducted using NumPy and Pandas in Python. The
 code for data cleaning can be found here.
@@ -290,10 +314,10 @@ the dependent variable of interest (score), we omit \texttt{ranked},
 Notably, number of members, favorites, watching, completed, on-hold,
 dropped, and plan to watch are moderately to highly correlated. In order
 to correct for this, we will retain number of community members in each
-anime's group as the representation of membership to the anime's fanbase
-in our dataset. Additionally, start year is highly correlated with end
-year so we'll just retain information on start year and instead create a
-variable representing number of years running.
+anime's group as the representation of membership to the anime's fan
+base in our dataset. Additionally, start year is highly correlated with
+end year so we'll just retain information on start year and instead
+create a variable representing number of years running.
 
 \includegraphics{index_files/figure-latex/unnamed-chunk-14-1.pdf}
 
@@ -318,13 +342,7 @@ The remaining 20\% will be saved to test the accuracy of our model on.
 
 After going through stepwise selection, we yield the following model:
 
-\emph{E{[}Score{]} = -14.4 + 0.0004Episodes +
-0.16Rating\textsubscript{PG-13} + 0.05Rating\textsubscript{PG}+
-0.22RatingR - 0.16Rating\textsubscript{R+} -
-0.21Rating\textsubscript{Rx} + 0.000001Members + 0.02Duration +
-0.02Action + 0.15Comedy + 0.31Drama + 0.26Historical + 0.06Magic +
-0.04School + 0.28Shounen + 0.23Slice of Life + 0.01Start Year + 0.03Num.
-Years Running}
+\begin{center}\includegraphics[width=20.81in]{img/mod_equ} \end{center}
 
 where \(E[Score]\) is the expected value of the score of each anime.
 
@@ -412,7 +430,7 @@ expect a 0.000001 increase in score, holding all other variables in the
 model constant. While this change seems small, it's helpful to keep in
 mind the range of values in each anime's group.
 
-\includegraphics{index_files/figure-latex/unnamed-chunk-18-1.pdf}
+\includegraphics{index_files/figure-latex/unnamed-chunk-19-1.pdf}
 
 In our train dataset, the number of members within each anime's group
 ranges from 1 to 2,589,552 with a median value of 4,568 which is a
@@ -427,7 +445,7 @@ additional minute per episode, the score is expected to increase by
 0.02. Of course, the expectation of duration is different by type
 (e.g.~TV, Movie, OVA).
 
-\includegraphics{index_files/figure-latex/unnamed-chunk-21-1.pdf}
+\includegraphics{index_files/figure-latex/unnamed-chunk-22-1.pdf}
 
 Though, there's no hard and fast rules for how long these mediums can
 be, we see from the scatterplot above that while anime for TV typically
@@ -472,11 +490,11 @@ standout among the hits, in the grand scheme of things, while there are
 amazing action anime that are being ranked and perceived well, there are
 also action anime out there that are performing less favorably among
 crowds. In fact, it seems that the action genre may even be
-oversaturated with the good, the bad, and the ugly. In other words,
+over-saturated with the good, the bad, and the ugly. In other words,
 purely slapping the genre of action on your anime doesn't make it an
 automatic hit. Yes, it's true. Audiences won't just froth at the mouth
 at characters going toe-to-toe in combat without it having that special
-`umph' to it that really makes it a generational favorite.
+`oomph' to it that really makes it a generational favorite.
 
 \textbf{This just in, newer anime are in!} According to our model, with
 each additional year of an anime airing, we expect a score increase of
@@ -490,8 +508,8 @@ Additionally, we can take into account how many years an anime has been
 running. Evidently, anime that have been on-going for longer have
 significantly higher scores than those that have not. Perhaps being in
 the good graces of key audiences is what have allowed them to persist
-for so long. According to our model, with each additional year of
-runtime, the score value is expected to increase by 0.03.
+for so long. According to our model, with each additional year of run
+time, the score value is expected to increase by 0.03.
 
 Now that we've summarized what our model is trying to tell us about the
 anime in our training set, we can apply our model to our withheld test
@@ -500,16 +518,24 @@ set to see how well it performs on data it hasn't seen!
 We'll use mean absolute error (MAE) as our measure of score prediction
 error, which is measured as such:
 
-\(\frac{\sum_{i=1}^n |Score_{prediction} - Score_{true}}{n}\)
+\begin{center}\includegraphics[width=5.42in]{img/mae} \end{center}
 
-\begin{verbatim}
-##      RMSE        R2 
-## 0.5957100 0.3634162
-\end{verbatim}
+We use our model to predict on our test data and collect prediction
+error on each observation. The plot below shows that the distribution of
+prediction errors seems to roughly normally distributed with a maximum
+error observed of 2.64 and a minimum error of -1.79. To put things into
+context, on a scale of 1-10, which is the scale of MAL score, an error
+of 2.64 can be a gross overestimation of an anime's score. This maximum
+value seems to be an outlier though as the majority of prediction errors
+hover around 0.
 
-\begin{verbatim}
-## [1] 0.4951631
-\end{verbatim}
+\includegraphics{index_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+And so the mean absolute error is 0.5. So, on average, we can expect a
+0.5 (or 1/2 a point) prediction error from this model. With that being
+said, it may be reasonable to conclude that our model generally performs
+well on our test data and we may have some comfort in the validity of
+the inferential conclusions drawn by our model!
 
 \hypertarget{scores-galore-do-users-preemptively-score-anime-does-the-general-consensus-change-from-all-users-to-users-who-have-marked-the-anime-as-completed}{%
 \subsubsection{Scores Galore: Do users preemptively score anime? Does
@@ -537,14 +563,59 @@ indicated that they have completed the respective anime:
 Score\textsubscript{MAL} - Score\textsubscript{Completed}
 
 If the scores are not significantly different, we may expect that this
-vector of differences follow a standard normal distribution with mean 0
-and standard deviation 1 (i.e.~N \textasciitilde{} (0, 1)).
+vector of differences follow a normal distribution centered around 0.
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-31-1.pdf}
+
+The distribution of differences between scores (MAL Score - Completed
+Users Score) is centered around a mean of 0.02 with a standard deviation
+of 0.23. A mean of 0.02 which is positive, mean that MAL scores
+generally tend to be slightly higher than scores given by users who have
+marked those anime as completed.
+
+It's difficult to just eyeball this distribution and decide whether or
+not the difference between these scores is significantly different or
+not. One way to formally test this is by using a \textbf{paired-sample
+T-test}. The paired-sample t-test can be used to determine whether the
+mean difference between pairs of measurements is 0 or not. Thus, the
+following hypotheses are tested:
+
+\begin{center}\includegraphics[width=300px]{img/score_t_test} \end{center}
+
+We display the results of the t-test below:
+
+\begin{verbatim}
+## 
+##  Paired t-test
+## 
+## data:  anime_full_df$score and anime_full_df$score_comp
+## t = 7.8543, df = 6832, p-value = 4.637e-15
+## alternative hypothesis: true mean difference is not equal to 0
+## 95 percent confidence interval:
+##  0.01616230 0.02691326
+## sample estimates:
+## mean difference 
+##      0.02153778
+\end{verbatim}
+
+The test yielded a p-value of 4.64 * 10\textsuperscript{-15} which gives
+us significant evidence to reject the null hypothesis. Thus, we may
+conclude that the mean difference between the sets of scores is not
+statistically zero. In particular, it's possible that generally users
+are preemptively scoring these anime when they otherwise may have had a
+worse opinion of the content had they completed the anime. Though, this
+is just a theory as to why we may be seeing a difference between the
+scores. We would have to do more extensive research like conducting an
+experiment or navigating a causal conclusion in order to explain why
+this phenomenon is observed in the data.
 
 \hypertarget{how-long-is-too-long}{%
 \subsubsection{How long is too long?}\label{how-long-is-too-long}}
 
+\includegraphics{./img/rampo.gif}
+
 We've all heard the age-old qualm with some anime these days. Though
-fans alike love it when our favorite storylines and characters keep
+fans alike love it when our favorite story lines and characters keep
 shoveling quality content into our trying lives, when is enough enough?
 Die hard fans can all name at least one show where they felt the story
 was dragged on and on when really, it would've just been optimal to end
@@ -552,5 +623,97 @@ it several episodes or even seasons ago.
 
 So, how long is too long? Is there an optimal range of episodes that an
 anime should be in order to leave the audience satisfied?
+
+There are a lot of ways to try and answer this question, but I'm going
+to do it by means of regressing number of episodes on anime score.
+Recall that score and episodes are both numeric values. Additionally, we
+will only consider anime made for TV consumption to keep the anime
+relatively within the same playing field in terms of episodic behavior
+instead of also including irregular mediums like movies, specials, and
+OVAs.
+
+First, we chose to synthesize the number of anime that fall under each
+episode count. We arbitrarily decided to retain information on episodes
+that at least 5 anime fall under so that no one anime is driving our
+inference on episode count.
+
+After filtering for episodes that have at least 5 episodes under its
+belt, we get a range of episodes from 3 to 104 episodes.
+
+Thus, we start by averaging MAL score by episode. According to the trend
+that we observe, there doesn't seem to be a strong negative or positive
+relationship between number of episodes and score. Though, what is
+interesting is where we observe a maximum average score.
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-36-1.pdf}
+
+We observe that an episode count of 74-75 episodes yielded the highest
+MAL scores on average. After 74-75 episodes, the average scores drop
+back down to below 7.5.
+
+Though this isn't confirmatory that 74-75 is now the magic number, it
+would be useful to see how this range fairs in MAL datasets from other
+years as well.
+
+\hypertarget{what-can-synopsis-tell-us-about-score}{%
+\subsubsection{What can synopsis tell us about
+score?}\label{what-can-synopsis-tell-us-about-score}}
+
+Included in the MyAnimeList database is a synopsis on the anime. Have
+you ever wondered, can the synopsis of an anime be a good indicator of
+score? What kinds of words often appear in anime that score highly
+vs.~those that score lowly?
+
+In order to characterize what it means for an anime to score lowly,
+averagely, or highly, we categorize score into ordered categories.
+Particularly, we'll be categorizing score into three separate score
+categories: low, medium, high. Anime with scores less than 6 were put
+into the low category, those with scores greater than or equal to 8 were
+placed into the high category, and all other anime were placed into the
+medium category.
+
+After categorizing the score variable, we get that only 5.6\% of anime
+fall into the high category on MAL, 18\% of anime fall into the low
+category, and the remaining 76.4\% of anime fall into the medium
+category.
+
+We collect the synopses from this anime belonging to each score group
+(low, medium, high) and concatenate/collapse them together.
+
+In order to get meaningful analyses, we will remove stop words from the
+\href{http://snowball.tartarus.org/algorithms/english/stop.txt}{Snowball
+stop word list}. We'll also add the words `source' and `ann' to the stop
+words list because they aren't of contextual significance and often
+appear in MAL synopses. We check the frequency of the words that appear
+within synopses of lowly scored, medium scored, to highly scored anime
+on MAL. We retain information on the top 20 most frequent words that
+appear in each categorization of score. In order to scope out the most
+meaningful words, we will remove words that appear in all three of the
+20 list for anime rated low, medium, and high. These words were one,
+world, school, new, life, however, high, two, can, day, time, now,
+young.
+
+And so we're left with the following information -
+
+\includegraphics{index_files/figure-latex/unnamed-chunk-44-1.pdf}
+\includegraphics{index_files/figure-latex/unnamed-chunk-44-2.pdf}
+\includegraphics{index_files/figure-latex/unnamed-chunk-44-3.pdf}
+
+A few things of note, anime involving a \texttt{girl} or \texttt{girls}
+tend to be more popular as these words appear most frequently for medium
+and highly scored anime synopses but not in lowly scored anime. Anime
+involving \texttt{friends} can be found in both highly scored anime and
+lowly scored anime so it seems the power of friendship is not too
+polarizing one way or the other. The same thing goes for the words
+\texttt{year} and \texttt{become}. Interestingly, \texttt{must}, and
+\texttt{old} standout within anime lowly scored. Just a few of many
+observations to take away from this exercise.
+
+For next steps, we can look into adjusting for the number of words in
+each synopsis or even extending our synopsis analysis into sentiment
+analysis.
+
+\hypertarget{so-what-did-we-learn}{%
+\subsection{So what did we learn?}\label{so-what-did-we-learn}}
 
 \end{document}
