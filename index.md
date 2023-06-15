@@ -14,30 +14,34 @@ Its relevance in today’s culture can be attributed to several factors,
 including its unique art style, diverse storytelling techniques, and the
 ability to explore complex themes.
 
-Anime’s storytelling techniques are diverse and encompass a wide range
-of genres and themes. Perhaps you’ve even heard of a few! From
-action-packed shonen series like “Dragon Ball” and “Naruto” to emotional
-dramas like “Your Lie in April” and “Clannad,” there is an anime for
-**everyone** out there! Anime also explores genres beyond traditional
-boundaries, such as psychological thrillers (“Death Note”), science
-fiction (“Ghost in the Shell”), and fantasy (“Attack on Titan”).
+Anime’s storytelling techniques are diverse and span a wide range of
+genres and themes. Perhaps you’ve even heard of a few shows from *your*
+favorite genre! From action-packed shonen series like “Dragon Ball” and
+“Naruto” to emotional dramas like “Your Lie in April” and “Clannad,”
+there is an anime for **everyone** out there! Anime also explores genres
+beyond traditional boundaries, such as psychological thrillers (“Death
+Note”), science fiction (“Ghost in the Shell”), and fantasy (“Attack on
+Titan”).
 
 In recent years, the popularity of anime has skyrocketed, thanks to
-digital platforms and streaming services making it easily accessible to
-a global audience. Anime conventions and events draw massive crowds,
-showcasing the passion and enthusiasm of fans. The influence of anime
-has permeated various aspects of popular culture, including fashion,
-music, video games, and even Hollywood adaptations.
+digital platforms and streaming services like
+[Crunchyroll](https://www.crunchyroll.com/) and
+[HIDIVE](https://www.hidive.com/?utm_medium=sem&utm_source=google&utm_campaign=hidive-branded&utm_keyword=&utm_content=&gad=1&gclid=CjwKCAjwyqWkBhBMEiwAp2yUFhqaup_2oREHbRyjccaL0TOmTIUF1lnVP8d-rily39Qvz_GMmAMZchoCUWsQAvD_BwE)
+making it easily accessible to a global audience. Anime conventions and
+events draw massive crowds, showcasing the passion and enthusiasm of
+fans. The influence of anime has permeated various aspects of popular
+culture, including fashion, music, video games, and even Hollywood
+adaptations.
 
-With dozens of new series being released each season, it’s no surprised
+With dozens of new series being released each season, it’s no surprise
 that fans and providers alike often wonder the age-old question: What
-makes an anime stick? What makes an anime go down in history like
+makes an anime *stick*? What makes an anime go down in history like
 absolute titans (no pun intended) like Attack on Titan, Naruto, Bleach,
 Dragon Ball Z, and more?! And how do we know and keep track of how
 audiences are receiving this media?
 
 Well, look no further! In comes
-[MyAnimeList.net](https://myanimelist.net/).
+[MyAnimeList.net](https://myanimelist.net/)!
 
 MyAnimeList.net (MAL) is an online platform dedicated to providing a
 comprehensive database and community-driven hub for anime and manga
@@ -59,12 +63,13 @@ recommendations and insights.
 
 ## Data and Data Cleaning
 
-We downloaded three [dataset housed on
+We downloaded three [datasets housed on
 Kaggle](https://www.kaggle.com/datasets/hernan4444/anime-recommendation-database-2020?select=anime.csv)
-scraped between February 26th and March 20th containing information
-about 17,562 anime and the preference from 325,772 different users.
+scraped between February 26th and March 20th 2020 containing information
+about 17,562 anime, and the preferences and ratings from 325,772
+different users.
 
-The `anime` dataset, which is the main dataset of interest detailed the
+The `anime` dataset, which is the main dataset of interest, detailed the
 core information of each anime listed.
 
 We retained the following information from the `anime` dataset:
@@ -176,19 +181,19 @@ We left-joined the `anime` data with the `anime_with_synopsis` data to
 retain synopsis information on all anime that had synopsis information
 in the `anime` dataset.
 
-The `rating_complete` data only considers anime that users have marked
-as ‘completed’. It gives the `user_id`, `anime_id` as it corresponds to
-the MyAnimeList ID of the anime the user has rated, and the `rating`
-being the rating that the user has assigned to that particular anime
-that they have marked as completed. In order to synthesize this
-information, we aggregated the data by anime id and derived the average
-score given to each anime by users that have marked that anime as
-completed. This information was also left-joined to the dataset with the
-original anime data and synopsis data in order to retain the average
-score of each anime as according to users that have marked the anime as
-completed.
+The `rating_complete` data only considers anime ratings that users have
+marked as ‘completed’ on the platform. It gives the `user_id`,
+`anime_id` as it corresponds to the MyAnimeList ID of the anime the user
+has rated, and the `rating` (or score out of 10) being the rating that
+the user has assigned to that particular anime that they have marked as
+completed. In order to synthesize this information, we aggregated the
+data by anime ID and derived the average score given to each anime by
+users that have marked that anime as completed. This information was
+also left-joined to the dataset with the original anime data and
+synopsis data in order to retain the average score of each anime as
+according to users that have marked the anime as completed.
 
-Thus, we have two more columns of interest in our dataset.
+Thus, we add two more columns of interest in our dataset.
 
 <table>
 <colgroup>
@@ -216,14 +221,15 @@ pts.</td>
 </table>
 
 I first chose to reduce our analysis to only include anime with more
-than one episodes, so no movies, one-shots, or distinctive OVAs. We
-wanted to get information about anime series with continuous behavior,
-even if it was just a two-episode stint. This reduced our pool to 9,181
-anime. Additionally, the `genres`, `aired`, and `studios` variables were
-reformatted for the purpose of analysis. \*Note: For genre, we retained
-information about genres that had a frequency of at least 2% of all the
-genres listed in the dataset. This reformatting led to the addition of a
-few more columns to make the data in the raw dataset more digestible:
+than one episode, so that removed a lot of movies, one-shots, and
+distinctive OVAs from the dataset. We wanted to get information about
+anime series with *continuous* behavior, even if it was just for a
+two-episode stint. This reduced our pool to 9,181 anime. Additionally,
+the `genres`, `aired`, and `studios` variables were reformatted for the
+purpose of analysis. \*Note: For genre, we retained information about
+genres that had a frequency of at least 2% of all the genres listed in
+the dataset. This reformatting led to the addition of a few more columns
+to improve the interpretability of analysis:
 
 <table>
 <colgroup>
@@ -267,8 +273,10 @@ currently airing</td>
 </tbody>
 </table>
 
-All data cleaning was conducted using NumPy and Pandas in Python. The
-code for data cleaning can be found here.
+Most data cleaning was conducted using `NumPy` and `pandas` in Python
+with some final touches conducted using `tidyverse` and `dplyr` in R.
+The code for data cleaning can be found in the GitHub repository linked
+at the top of the page.
 
 ## Research Questions
 
@@ -278,10 +286,10 @@ There are a few questions that we hope to answer using this dataset.
     anime?
 
 2.  Do the scores of these anime differ based on all users vs. users
-    that have that anime marked as completed?
+    that have that anime marked as completed in MAL?
 
-3.  Is there an optimal number of episodes an anime should have to be
-    scored well on MyAnimeList?
+3.  Is there an optimal number of episodes an anime should be in order
+    to score well on MyAnimeList?
 
 4.  Can the synopsis of an anime be a good indicator of anime ranking?
 
@@ -291,22 +299,23 @@ We start by checking for multicollinearity between our predictors of
 interest in order to reduce dimensionality and stabilize the variance of
 our estimated coefficients. Because of their direct relationship with
 the dependent variable of interest (score), we omit `ranked`,
-`popularity`, and `score_completed`
+`popularity`, and `score_completed` as possible predictors.
 
 ![](index_files/figure-markdown_strict/unnamed-chunk-12-1.png)
 
-Notably, number of members, favorites, watching, completed, on-hold,
-dropped, and plan to watch are moderately to highly correlated. In order
-to correct for this, we will retain number of community members in each
-anime’s group as the representation of membership to the anime’s fan
-base in our dataset. Additionally, start year is highly correlated with
-end year so we’ll just retain information on start year and instead
-create a variable representing number of years running.
+Notably, number of `members`, `favorites`, `watching`, `completed`,
+`on-hold`, `dropped`, and `plan to watch` are moderately to highly
+correlated with one another. In order to correct for this, we will
+retain number of community members in each anime’s group as the
+representation of membership to the anime’s fan base in our dataset.
+Additionally, start year is highly correlated with end year so we just
+retained information on start year and instead created a variable
+representing *number* of years running.
 
 ![](index_files/figure-markdown_strict/unnamed-chunk-14-1.png)
 
-After removing the variables strongly correlated with number of
-variables, we have a better distribution of variables without unexpected
+After removing the variables strongly correlated with number of members,
+we have a better distribution of variables without unexpected
 multicollinearity. We move on to stepwise selection with these
 predictors as well as our non-numeric predictors to choose the best
 variables to model MyAnimeList score.
@@ -320,9 +329,10 @@ following variables: Action, Adventure, Comedy, Drama, Fantasy,
 Historical, Kids, Magic, Mecha, Romance, School, Sci-Fi, Shounen, Slice
 of Life, and Supernatural.
 
-In order to validate the generalizability, we will perform stepwise
-selection on 80% of our dataset, which we’ll call the training data. The
-remaining 20% will be saved to test the accuracy of our model on.
+In order to validate the generalizability of our model, we will perform
+stepwise selection on 80% of our dataset, which we’ll call the training
+data. The remaining 20% will be saved to test (test data) the accuracy
+of our model on.
 
 After going through stepwise selection, we yield the following model:
 
@@ -396,9 +406,9 @@ and score. While generally audiences tend to like content that are on
 the maturer side (rated PG-13 and R - 17+), there’s a limit to exactly
 *how* spicy audiences like their content to be cooked up for them.
 Particularly, as we see an upward trend in score from ratings G, PG,
-PG-13, and R- 17+, the next too more intense levels of content, R+ for
-mild nudity, and Rx for full blown Hentai are in fact scored the lowest
-on the list. Meaning, we mature themes seem to be a hit among the MAL
+PG-13, and R- 17+, the next two more intense levels of content, R+ for
+mild nudity and Rx for full blown Hentai, are in fact scored the lowest
+on the list. Meaning, mature themes seem to be a hit among the MAL
 community, but explicit content… not so much.
 
 ![](./img/watch_tv.gif)
@@ -418,8 +428,8 @@ with a member base the size of the median value of 4,568 to increase by
 an estimated 0.005 (0.000001\*4,568 members) points.
 
 Now let’s talk duration per episode. Our model shows that there is a
-positive association between the number of episodes in a season, and the
-score of an anime. The more the merrier, one might say. With each
+positive association between the duration of episodes, and the score of
+an anime. The longer the anime, the deeper the obsession. With each
 additional minute per episode, the score is expected to increase by
 0.02. Of course, the expectation of duration is different by type
 (e.g. TV, Movie, OVA).
@@ -437,8 +447,8 @@ How about genre? Do some genres tend to be more well received than
 others, at least in regard to score?
 
 Well, according to our model, these are the genres that are scored from
-highest to lowest on MyAnimeList.net in order, holding all other
-variables in our model constant:
+highest to lowest on MyAnimeList.net, holding all other variables in our
+model constant:
 
 1.  Drama
 
@@ -456,19 +466,19 @@ variables in our model constant:
 
 8.  Action
 
-Now, you may be wondering for example, I mean, from My Hero Academia to
-Jujutsu Kaisen, it’s no doubt that action anime encompass a huge portion
-of the hits right now. However… action is also the most frequently
-reported genre in 2020. So while it’s a standout among the hits, in the
-grand scheme of things, while there are amazing action anime that are
-being ranked and perceived well, there are also action anime out there
-that are performing less favorably among crowds. In fact, it seems that
-the action genre may even be over-saturated with the good, the bad, and
-the ugly. In other words, purely slapping the genre of action on your
-anime doesn’t make it an automatic hit. Yes, it’s true. Audiences won’t
-just froth at the mouth at characters going toe-to-toe in combat without
-it having that special ‘oomph’ to it that really makes it a generational
-favorite.
+Now, you may be wondering, *how come Action isn’t ranked higher on this
+list?!* I mean, from My Hero Academia to Jujutsu Kaisen, it’s no doubt
+that Action anime encompass a huge portion of the hits right now.
+However, action is also the most frequently reported genre in 2020. So
+while it’s a standout among the hits, in the grand scheme of things,
+while there are amazing Action anime that are being ranked and perceived
+well, there are also Action anime out there that are performing less
+favorably among crowds. In fact, it seems that the Action genre may even
+be over-saturated with the good, the bad, and the ugly. In other words,
+purely slapping the genre of Action on your anime doesn’t make it an
+automatic hit. Yes, it’s true. Audiences won’t just froth at the mouth
+at characters going toe-to-toe in combat without the plot having that
+special ‘oomph’ to it that really would make it a generational favorite.
 
 **This just in, newer anime are in!** According to our model, with each
 additional year of an anime airing, we expect a score increase of 0.01.
@@ -496,7 +506,7 @@ error, which is measured as such:
 
 We use our model to predict on our test data and collect prediction
 error on each observation. The plot below shows that the distribution of
-prediction errors seems to roughly normally distributed with a maximum
+prediction error seems to roughly normally distributed with a maximum
 error observed of 2.64 and a minimum error of -1.79. To put things into
 context, on a scale of 1-10, which is the scale of MAL score, an error
 of 2.64 can be a gross overestimation of an anime’s score. This maximum
@@ -511,17 +521,18 @@ said, it may be reasonable to conclude that our model generally performs
 well on our test data and we may have some comfort in the validity of
 the inferential conclusions drawn by our model!
 
-### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked the anime as ‘completed’?
+### Scores Galore: Do users preemptively score anime? Does the general consensus change from all users to users who have marked anime as ‘completed’?
 
 Alright! We’ve talked about the key predictors of anime performance and
 to what magnitude these factors are expected to affect MAL score. We do
 well to recall that MAL score is averaged from scores assigned to anime
 from *all* users. A question of interest - does this averaged score
 significantly differ from the average score given only by users that
-have marked that anime as ‘completed’? And if so, could this give us
-insight that users may preemptively score anime or that users that may
-score anime before seeing the whole thing may have held a different
-opinion if they had seen the whole thing through? Let’s investigate.
+have marked each respective anime as ‘completed’? And if so, could this
+give us insight that users may preemptively score anime or that users
+that may score anime before seeing the whole thing may have held a
+different opinion if they had seen the whole thing through? Let’s
+investigate.
 
 Earlier, we were able to left-join information on scores given to anime
 by users that have marked those anime as ‘completed’ on MAL.
@@ -539,14 +550,14 @@ vector of differences follow a normal distribution centered around 0.
 
 The distribution of differences between scores (MAL Score - Completed
 Users Score) is centered around a mean of 0.02 with a standard deviation
-of 0.23. A mean of 0.02 which is positive, mean that MAL scores
+of 0.23. A mean of 0.02 which is positive, means that MAL scores
 generally tend to be slightly higher than scores given by users who have
 marked those anime as completed.
 
 It’s difficult to just eyeball this distribution and decide whether or
-not the difference between these scores is significantly different or
+not the differences between these scores are significantly different or
 not. One way to formally test this is by using a **paired-sample
-T-test**. The paired-sample t-test can be used to determine whether the
+t-test**. The paired-sample t-test can be used to determine whether the
 mean difference between pairs of measurements is 0 or not. Thus, the
 following hypotheses are tested:
 
@@ -583,13 +594,13 @@ this phenomenon is observed in the data.
 
 We’ve all heard the age-old qualm with some anime these days. Though
 fans alike love it when our favorite story lines and characters keep
-shoveling quality content into our trying lives, when is enough enough?
-Die hard fans can all name at least one show where they felt the story
-was dragged on and on when really, it would’ve just been optimal to end
-it several episodes or even seasons ago.
+shoveling quality content into our trying lives, when is enough
+*enough*? Die hard fans can all name at least one show where they felt
+the story was dragged on and on when really, it would’ve just been
+optimal to end it several episodes or even seasons ago.
 
 So, how long is too long? Is there an optimal range of episodes that an
-anime should be in order to leave the audience satisfied?
+anime should be in in order to leave the audience satisfied?
 
 There are a lot of ways to try and answer this question, but I’m going
 to do it by means of regressing number of episodes on anime score.
@@ -600,9 +611,9 @@ instead of also including irregular mediums like movies, specials, and
 OVAs.
 
 First, we chose to synthesize the number of anime that fall under each
-episode count. We arbitrarily decided to retain information on episodes
-that at least 5 anime fall under so that no one anime is driving our
-inference on episode count.
+episode count. We arbitrarily decided to retain information on episode
+counts that at least 5 anime fall under so that no one anime is driving
+our inference on episode count.
 
 After filtering for episodes that have at least 5 episodes under its
 belt, we get a range of episodes from 3 to 104 episodes.
@@ -616,7 +627,7 @@ interesting is where we observe a maximum average score.
 
 We observe that an episode count of 74-75 episodes yielded the highest
 MAL scores on average. After 74-75 episodes, the average scores drop
-back down to below 7.5.
+back down to below 7.5 out of 10.
 
 Though this isn’t confirmatory that 74-75 is now the magic number, it
 would be useful to see how this range fairs in MAL datasets from other
@@ -625,17 +636,17 @@ years as well.
 ### What can synopsis tell us about score?
 
 Included in the MyAnimeList database is a synopsis on the anime. Have
-you ever wondered, can the synopsis of an anime be a good indicator of
+you ever wondered if the synopsis of an anime be a good indicator of
 score? What kinds of words often appear in anime that score highly
 vs. those that score lowly?
 
 In order to characterize what it means for an anime to score lowly,
 averagely, or highly, we categorize score into ordered categories.
-Particularly, we’ll be categorizing score into three separate score
-categories: low, medium, high. Anime with scores less than 6 were put
-into the low category, those with scores greater than or equal to 8 were
-placed into the high category, and all other anime were placed into the
-medium category.
+Particularly, we’ll be categorizing score into three separate
+categories: low, medium, and high. Anime with scores less than 6 were
+put into the low category, those with scores greater than or equal to 8
+were placed into the high category, and all other anime were placed into
+the medium category.
 
 After categorizing the score variable, we get that only 5.6% of anime
 fall into the high category on MAL, 18% of anime fall into the low
@@ -646,17 +657,17 @@ We collect the synopses from this anime belonging to each score group
 (low, medium, high) and concatenate/collapse them together.
 
 In order to get meaningful analyses, we will remove stop words from the
-[Snowball stop word
+synopses using the [Snowball stop word
 list](http://snowball.tartarus.org/algorithms/english/stop.txt). We’ll
 also add the words ‘source’ and ‘ann’ to the stop words list because
 they aren’t of contextual significance and often appear in MAL synopses.
 We check the frequency of the words that appear within synopses of lowly
-scored, medium scored, to highly scored anime on MAL. We retain
+scored, medium scored, and highly scored anime on MAL. We retain
 information on the top 20 most frequent words that appear in each
 categorization of score. In order to scope out the most meaningful
-words, we will remove words that appear in all three of the 20 list for
-anime rated low, medium, and high. These words were one, world, school,
-new, life, however, high, two, can, day, time, now, young.
+words, we will remove words that appear in all three of the top 20 lists
+for anime rated low, medium, and high. These words were one, world,
+school, new, life, however, high, two, can, day, time, now, and young.
 
 And so we’re left with the following information -
 
@@ -698,16 +709,16 @@ They’re the kings! They get all the love and high scores. But action,
 well, it’s a bit overcrowded. It’s like trying to find a diamond in a
 pile of rocks. Some shine, but others… not so much. Here’s an
 interesting tidbit: people can be quick to judge. The study found that
-some users rate anime before even finishing them. It’s like saying,
-“I’ve seen enough, time to rate!” But hey, completionists, don’t fret.
-Your scores are a tad more critical than the impatient ones.
+some users seem to rate anime before even finishing them. It’s like
+saying, “I’ve seen enough, time to rate!” But hey, completionists, don’t
+fret. Your scores are a tad more critical than the impatient ones.
 
 Now, you’d think there’s an ideal number of episodes for an anime to be
 a hit. Well, not necessarily. The study checked out TV anime and
-surprise, surprise—there’s no magic number. Each series does its own
+surprise, surprise — there’s no magic number. Each series does its own
 thing, with different episode counts and corresponding scores.
 
-So, there you have it—some preliminary insights into what makes anime
+So, there you have it — some preliminary insights into what makes anime
 popular. We’ve unveiled the secrets of episode length, content, genres,
 fanbase size, and even impatient raters. Now go forth, my fellow otakus,
 armed with this quirky knowledge, and let the anime marathon continue!
