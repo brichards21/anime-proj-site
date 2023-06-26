@@ -293,6 +293,22 @@ There are a few questions that we hope to answer using this dataset.
 
 4.  Can the synopsis of an anime be a good indicator of anime ranking?
 
+Before we start to answer our questions of interest, we’ll observe and
+take note of the distribution of our main dependent variable of
+interest: anime score. To recall, score is the average score of the
+anime given from all users in the MyAnimelist database. The lowest score
+that a user can give an anime is 1 and the highest score a user can give
+an anime is 10.
+
+And so we observe the distribution of scores we have in our data:
+
+![](index_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+
+Overall, we have a mean score of 6.7 with 25% of scores lying below 6.17
+and 25% of scores lying above 7.24. And so it seems that most of our
+scores are tightly distributed around our mean of 6.7. We do observe
+some left skew but it seems that skew is mainly due to a few outliers.
+
 ### The Pinnacle of Anime: What are the most important contributors to predicting the popularity (score) of an anime?
 
 We start by checking for multicollinearity between our predictors of
@@ -301,7 +317,7 @@ our estimated coefficients. Because of their direct relationship with
 the dependent variable of interest (score), we omit `ranked`,
 `popularity`, and `score_completed` as possible predictors.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-12-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-13-1.png)
 
 Notably, number of `members`, `favorites`, `watching`, `completed`,
 `on-hold`, `dropped`, and `plan to watch` are moderately to highly
@@ -312,7 +328,7 @@ Additionally, start year is highly correlated with end year so we just
 retained information on start year and instead created a variable
 representing *number* of years running.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-14-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-15-1.png)
 
 After removing the variables strongly correlated with number of members,
 we have a better distribution of variables without unexpected
@@ -419,7 +435,7 @@ expect a 0.000001 increase in score, holding all other variables in the
 model constant. While this change seems small, it’s helpful to keep in
 mind the range of values in each anime’s group.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-19-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-20-1.png)
 
 In our train dataset, the number of members within each anime’s group
 ranges from 1 to 2,589,552 with a median value of 4,568 which is a
@@ -434,7 +450,7 @@ additional minute per episode, the score is expected to increase by
 0.02. Of course, the expectation of duration is different by type
 (e.g. TV, Movie, OVA).
 
-![](index_files/figure-markdown_strict/unnamed-chunk-22-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-23-1.png)
 
 Though, there’s no hard and fast rules for how long these mediums can
 be, we see from the scatterplot above that while anime for TV typically
@@ -513,7 +529,7 @@ of 2.64 can be a gross overestimation of an anime’s score. This maximum
 value seems to be an outlier though as the majority of prediction errors
 hover around 0.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-28-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-29-1.png)
 
 And so the mean absolute error is 0.5. So, on average, we can expect a
 0.5 (or 1/2 a point) prediction error from this model. With that being
@@ -546,7 +562,7 @@ Score<sub>MAL</sub> - Score<sub>Completed</sub>
 If the scores are not significantly different, we may expect that this
 vector of differences follow a normal distribution centered around 0.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-31-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-32-1.png)
 
 The distribution of differences between scores (MAL Score - Completed
 Users Score) is centered around a mean of 0.02 with a standard deviation
@@ -623,7 +639,7 @@ that we observe, there doesn’t seem to be a strong negative or positive
 relationship between number of episodes and score. Though, what is
 interesting is where we observe a maximum average score.
 
-![](index_files/figure-markdown_strict/unnamed-chunk-36-1.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-37-1.png)
 
 We observe that an episode count of 74-75 episodes yielded the highest
 MAL scores on average. After 74-75 episodes, the average scores drop
@@ -659,19 +675,20 @@ We collect the synopses from this anime belonging to each score group
 In order to get meaningful analyses, we will remove stop words from the
 synopses using the [Snowball stop word
 list](http://snowball.tartarus.org/algorithms/english/stop.txt). We’ll
-also add the words ‘source’ and ‘ann’ to the stop words list because
-they aren’t of contextual significance and often appear in MAL synopses.
-We check the frequency of the words that appear within synopses of lowly
-scored, medium scored, and highly scored anime on MAL. We retain
-information on the top 20 most frequent words that appear in each
-categorization of score. In order to scope out the most meaningful
-words, we will remove words that appear in all three of the top 20 lists
-for anime rated low, medium, and high. These words were one, world,
-school, new, life, however, high, two, can, day, time, now, and young.
+also add the words ‘source’, ‘ann’, ;anime’, and ‘series’ to the stop
+words list because they aren’t of contextual significance and often
+appear in MAL synopses. We check the frequency of the words that appear
+within synopses of lowly scored, medium scored, and highly scored anime
+on MAL. We retain information on the top 20 most frequent words that
+appear in each categorization of score. In order to scope out the most
+meaningful words, we will remove words that appear in all three of the
+top 30 lists for anime rated low, medium, and high. These words were
+one, world, school, new, life, however, high, two, can, day, time, now,
+and young.
 
 And so we’re left with the following information -
 
-![](index_files/figure-markdown_strict/unnamed-chunk-44-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-44-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-44-3.png)
+![](index_files/figure-markdown_strict/unnamed-chunk-45-1.png)![](index_files/figure-markdown_strict/unnamed-chunk-45-2.png)![](index_files/figure-markdown_strict/unnamed-chunk-45-3.png)
 
 A few things of note, anime involving a `girl` or `girls` tend to be
 more popular as these words appear most frequently for medium and highly
